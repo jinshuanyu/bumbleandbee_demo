@@ -323,62 +323,75 @@
                         instruction: "Listen to the sentence and choose the missing word.",
                         questions: [
                             { 
-                                text: "Bumble and Froggy made a fall ____.", 
+                                text: "____ in leaves was so much fun!", 
+                                blank: "Jumping",
+                                fullSentence: "Jumping in leaves was so much fun!",
+                                options: ["paint", "Jumping", "wish", "list"]
+                            },
+                            { 
+                                text: "I will look at our ____, Bumble.", 
                                 blank: "list",
-                                fullSentence: "Bumble and Froggy made a fall list.",
-                                options: ["paint", "jump", "wish", "list"]
+                                fullSentence: "I will look at our list, Bumble.",
+                                options: ["list", "jump", "wish", "pumpkin"]
                             },
                             { 
-                                text: "I want to ____ a pumpkin orange.", 
-                                blank: "paint",
-                                fullSentence: "I want to paint a pumpkin orange.",
-                                options: ["paint", "jump", "wish", "pumpkin"]
-                            },
-                            { 
-                                text: "Let's ____ in the leaves!", 
-                                blank: "jump",
-                                fullSentence: "Let's jump in the leaves!",
-                                options: ["paint", "jump", "list", "pumpkin"]
-                            },
-                            { 
-                                text: "I ____ for a sunny day.", 
+                                text: "We ____  for a pumpkin!!!", 
                                 blank: "wish",
-                                fullSentence: "I wish for a sunny day.",
-                                options: ["paint", "wish", "list", "jump"]
+                                fullSentence: "We wish for a pumpkin!!!",
+                                options: ["paint", "jump", "list", "wish"]
                             },
                             { 
-                                text: "We need a big ____ for the pie.", 
+                                text: "We turned Froggy into a ____ !", 
                                 blank: "pumpkin",
-                                fullSentence: "We need a big pumpkin for the pie.",
-                                options: ["list", "jump", "pumpkin", "wish"]
+                                fullSentence: "We turned Froggy into a pumpkin!",
+                                options: ["paint", "pumpkin", "list", "jump"]
+                            },
+                            { 
+                                text: "Let's carve and ____ them!", 
+                                blank: "paint",
+                                fullSentence: "Let's carve and paint them!",
+                                options: ["paint", "jump", "pumpkin", "wish"]
                             }
                         ]
                     },
-                    "B1-L02": {
-                        type: "listening_fill",
-                        title: "Baking Sentences",
-                        instruction: "Listen to the sentence and choose the missing word.",
-                        questions: [
-                            { 
-                                text: "Let's ____ a pie together!", 
-                                blank: "bake",
-                                fullSentence: "Let's bake a pie together!",
-                                options: ["bake", "forget", "pie", "butter"]
-                            },
-                            { 
-                                text: "Don't ____ the sugar!", 
-                                blank: "forget",
-                                fullSentence: "Don't forget the sugar!",
-                                options: ["bake", "forget", "get", "pie"]
-                            },
-                            { 
-                                text: "The apple ____ smells delicious.", 
-                                blank: "pie",
-                                fullSentence: "The apple pie smells delicious.",
-                                options: ["bake", "butter", "pie", "forget"]
-                            }
-                        ]
-                    },
+                   "B1-L02": {
+  type: "listening_fill",
+  title: "Apple Pie Sentences",
+  instruction: "Listen to the sentence and choose the missing word.",
+  questions: [
+    {
+      text: "I am about to ____ my famous apple pie!",
+      blank: "bake",
+      fullSentence: "I am about to bake my famous apple pie!",
+      options: ["butter", "bake", "forget", "pie"]
+    },
+    {
+      text: "Do not worry. We will ____ the butter.",
+      blank: "get",
+      fullSentence: "Do not worry. We will get the butter.",
+      options: ["get", "bake", "forget", "pie"]
+    },
+    {
+      text: "And we will not ____ .",
+      blank: "forget",
+      fullSentence: "And we will not forget.",
+      options: ["forget", "get", "bake", "butter"]
+    },
+    {
+      text: "Maybe I should write down ____ ?",
+      blank: "butter",
+      fullSentence: "Maybe I should write down butter?",
+      options: ["butter", "pie", "get", "forget"]
+    },
+    {
+      text: "Here you go, Froggy. Everything you need to bake your ____ !",
+      blank: "pie",
+      fullSentence: "Here you go, Froggy. Everything you need to bake your pie!",
+      options: ["pie", "butter", "bake", "forget"]
+    }
+  ]
+},
+
                     "B1-S01": {
                         type: "story_draw",
                         title: "Paint the Pumpkin",
