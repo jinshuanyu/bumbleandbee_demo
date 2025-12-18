@@ -296,11 +296,58 @@
             complete() { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.play(f,0.3),i*150)); }
         }
 
+        // Updated AudioManager with MP3 Fetching
         class AudioManager {
-            constructor() { this.synth = window.speechSynthesis; }
-            init() { this.synth.speak(new SpeechSynthesisUtterance('')); }
-            speak(txt) { if(!txt)return; this.synth.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang='en-US'; u.rate=0.9; this.synth.speak(u); }
-            async playSentence(id, idx, txt) { this.speak(txt); }
+            constructor() { 
+                this.synth = window.speechSynthesis; 
+                this.audioCache = {};
+                this.enabled = false;
+            }
+            
+            init() { 
+                this.enabled = true;
+                this.synth.speak(new SpeechSynthesisUtterance('')); 
+            }
+            
+            speak(txt, rate = 0.9) { 
+                if(!this.enabled || !txt) return; 
+                this.synth.cancel(); 
+                const u = new SpeechSynthesisUtterance(txt); 
+                u.lang = 'en-US'; 
+                u.rate = rate; 
+                this.synth.speak(u); 
+            }
+            
+            async playSentence(id, idx, txt) { 
+                if (!this.enabled) return;
+                
+                const mp3Path = `audio/${id}/q${idx}.mp3`;
+                
+                // Check cache first
+                if (this.audioCache[mp3Path]) {
+                    try {
+                        this.audioCache[mp3Path].currentTime = 0;
+                        await this.audioCache[mp3Path].play();
+                        return;
+                    } catch(e) { /* Fall through to MP3 load */ }
+                }
+                
+                // Try load
+                try {
+                    const audio = new Audio(mp3Path);
+                    audio.preload = 'auto';
+                    await new Promise((res, rej) => {
+                        audio.oncanplaythrough = res;
+                        audio.onerror = rej;
+                        setTimeout(rej, 2000);
+                    });
+                    this.audioCache[mp3Path] = audio;
+                    await audio.play();
+                } catch(e) {
+                    console.log('MP3 missing, using TTS', mp3Path);
+                    this.speak(txt, 0.8);
+                }
+            }
         }
 
         const app = { 
