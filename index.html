@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Bumble and Bee: Interactive Workbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --book1-primary: #FF8C42; --book1-bg: #FFF3E6;
@@ -15,1802 +15,801 @@
             --white: #FFFFFF; --gray-light: #F5F5F5;
         }
         body {
-            font-family: 'Comic Neue', sans-serif;
+            font-family: 'ABeeZee', sans-serif;
             background-color: #FFF9C4;
             overscroll-behavior: none; user-select: none;
             -webkit-tap-highlight-color: transparent;
-            height: 100vh; width: 100vw; overflow: hidden;
-            display: flex; flex-direction: column;
+            height: 100vh; height: 100dvh; width: 100vw; 
+            overflow: hidden; display: flex; flex-direction: column;
         }
+        
         /* Layouts */
-        .books-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 20px; }
-        .book-card { background: var(--white); border: 4px solid var(--bee-black); border-radius: 20px; padding: 20px; cursor: pointer; transition: all 0.3s ease; text-align: center; position: relative; }
-        .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        .books-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px 10px; 
+            width: 100%; 
+        }
+        
+        .book-card { background: var(--white); border: 3px solid var(--bee-black); border-radius: 16px; padding: 10px; cursor: pointer; transition: all 0.2s ease; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 160px; }
+        .book-card:active { transform: scale(0.97); }
+
         .book-card.book1 { border-color: var(--book1-primary); } .book-card.book1 .book-cover { background: var(--book1-bg); }
         .book-card.book2 { border-color: var(--book2-primary); } .book-card.book2 .book-cover { background: var(--book2-bg); }
         .book-card.book3 { border-color: var(--book3-primary); } .book-card.book3 .book-cover { background: var(--book3-bg); }
-        .book-cover { font-size: 4rem; margin-bottom: 15px; border-radius: 10px; padding: 20px; line-height: 1.2; }
-        .book-title { font-size: 1.4rem; font-weight: bold; color: var(--bee-black); margin-bottom: 10px; }
-        .book-progress { font-size: 0.9rem; color: #666; }
-        .selected-banner { margin: 0.8rem auto 1.2rem; max-width: 520px; background: rgba(255,255,255,0.85); border: 2px dashed rgba(0,0,0,0.15); border-radius: 16px; padding: 0.7rem 1rem; text-align: center; font-weight: 700; font-size: 1.2rem; }
-        .nav-header { display: flex; align-items: center; padding: 15px 20px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 50; }
-        .back-btn { background: var(--white); border: 2px solid var(--bee-black); border-radius: 50%; width: 44px; height: 44px; font-size: 1.5rem; cursor: pointer; margin-right: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-        .back-btn:hover { background: var(--honey-yellow); }
-        .settings-btn { background: var(--white); border: 2px solid var(--bee-black); border-radius: 50%; width: 44px; height: 44px; font-size: 1.3rem; cursor: pointer; margin-left: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-        .settings-btn:hover { background: #ffcccc; }
+        
+        .book-cover { font-size: 3rem; margin-bottom: 8px; border-radius: 8px; padding: 4px; line-height: 1.1; letter-spacing: -2px; }
+        .book-title { font-size: 1rem; font-weight: 800; color: var(--bee-black); margin-bottom: 6px; line-height: 1.1; white-space: normal; overflow: visible; height: auto; }
+        .book-progress { font-size: 0.75rem; color: #666; margin-top: auto; }
+        
+        /* Header */
+        .nav-header { display: flex; align-items: center; padding: 10px 15px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 50; height: 60px; flex-shrink: 0; }
+        .nav-title-block { flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .nav-main-title { font-size: 1.2rem; font-weight: bold; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .back-btn, .settings-btn { background: var(--white); border: 2px solid var(--bee-black); border-radius: 50%; width: 42px; height: 42px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .back-btn { margin-right: 10px; } .settings-btn { margin-left: 10px; }
+
         .hidden { display: none !important; }
-        .container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .zh-text { font-family: 'Noto Sans TC', sans-serif; }
-        .total-stars { background: linear-gradient(135deg, #FFD700, #FFA500); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #78350F; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .star-badge { background: #FFF9C4; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; border: 2px solid #FCD34D; display: inline-flex; align-items: center; gap: 4px; }
         
         /* Orientation Overlay */
-        #orientation-overlay {
-            position: fixed; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 9999; display: none; align-items: center; justify-content: center;
-            flex-direction: column; color: white; text-align: center; padding: 2rem;
-        }
+        #orientation-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 9999; display: none; align-items: center; justify-content: center; flex-direction: column; color: white; text-align: center; padding: 2rem; }
         #orientation-overlay.show { display: flex; }
         .rotate-icon { font-size: 5rem; animation: rotate-phone 2s ease-in-out infinite; margin-bottom: 1.5rem; }
         @keyframes rotate-phone { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } }
         
-        /* Modal */
-        #audio-modal { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; transition: opacity 0.5s; }
-        .modal-content { background: white; border-radius: 1rem; padding: 2rem; width: 100%; max-width: 28rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 4px solid #FBBF24; animation: pop 0.3s ease-out; }
-        .start-btn { width: 100%; background-color: #FBBF24; color: #78350F; font-weight: 700; padding: 1rem 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); font-size: 1.25rem; border: none; cursor: pointer; transition: transform 0.1s; }
-        .start-btn:active { transform: scale(0.95); }
-        .cancel-btn { width: 100%; background-color: #e5e7eb; color: #374151; font-weight: 700; padding: 1rem 1.5rem; border-radius: 0.75rem; font-size: 1.1rem; border: none; cursor: pointer; transition: transform 0.1s; margin-top: 10px; }
-        
-        /* Vocab Game */
+        /* Game Areas */
         #sky-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; align-content: center; flex-wrap: wrap; padding: 10px; position: relative; background: linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%); }
-        #garden-area { width: 100%; display: flex; justify-content: center; align-items: flex-end; flex-wrap: wrap; padding-bottom: 20px; gap: 10px; background: #b3ffb3; min-height: 150px; }
-        .bee-item { width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; cursor: grab; z-index: 100; position: relative; animation: float 3s ease-in-out infinite; touch-action: none; }
-        .bee-icon { font-size: 3.5rem; line-height: 1; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2)); }
-        .bee-label { background: rgba(255,255,255,0.95); border: 2px solid #ffa500; border-radius: 12px; padding: 4px 12px; font-size: 18px; font-weight: 900; color: #d35400; margin-top: -15px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 101; }
-        .flower-target { width: 100px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; position: relative; }
-        .flower-icon { font-size: 3.5rem; line-height: 1; z-index: 1; }
-        .flower-label { font-size: 20px; font-weight: bold; color: #2e7d32; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; margin-top: 2px; z-index: 2; font-family: 'Noto Sans TC', sans-serif; text-align: center; display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
-        .flower-emoji { font-size: 1.8rem; margin-top: 4px; }
-        .flower-target.matched .flower-label { color: #1565C0; }
+        #garden-area { width: 100%; display: flex; justify-content: center; align-items: flex-end; flex-wrap: wrap; padding-bottom: 20px; gap: 10px; background: #b3ffb3; min-height: 130px; }
         
-        /* Landed bee on flower - full bee with label */
-        .landed-bee { position: absolute; top: -55px; left: 50%; transform: translateX(-50%); z-index: 200; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; animation: happy-land 0.5s ease-out; }
-        .landed-bee .bee-icon { font-size: 2.8rem; }
-        .landed-bee .bee-label { font-size: 14px; padding: 2px 8px; margin-top: -10px; }
+        .bee-item, .honeypot-item { width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; cursor: grab; z-index: 100; position: relative; animation: float 3s ease-in-out infinite; touch-action: none; }
+        .bee-icon, .honeypot-item-icon { font-size: 3rem; line-height: 1; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2)); }
+        .bee-label, .honeypot-item-label { background: rgba(255,255,255,0.95); border: 2px solid #ffa500; border-radius: 10px; padding: 2px 8px; font-size: 16px; font-weight: 900; color: #d35400; margin-top: -12px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 101; }
         
-        /* Clouds for sky background */
+        /* Honeypot specific overrides */
+        .honeypot-item-label { border-color: #b45309; color: #92400e; margin-top: -10px; }
+        
+        /* Targets */
+        .flower-target, .honeypot-target { width: 90px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; position: relative; transition: transform 0.2s; }
+        .hive-cell { width: 100px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: transform 0.2s; margin: 5px; }
+        
+        .flower-icon, .honeypot-icon { font-size: 3rem; line-height: 1; z-index: 1; }
+        .flower-label, .honeypot-label { font-size: 18px; font-weight: bold; color: #2e7d32; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; margin-top: 2px; z-index: 2; font-family: 'Noto Sans TC', sans-serif; text-align: center; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+        .hive-label { font-size: 18px; font-weight: bold; color: #78350f; font-family: 'Noto Sans TC', sans-serif; }
+        .flower-emoji, .honeypot-emoji { font-size: 1.5rem; margin-top: 2px; }
+        
+        /* Highlight State */
+        .highlight { transform: scale(1.15) !important; filter: drop-shadow(0 0 8px gold); z-index: 10; }
+        
+        .dragging-clone { position: fixed; z-index: 99999; pointer-events: none; transform: scale(1.2) rotate(-10deg); opacity: 0.9; }
+        .opacity-0 { opacity: 0 !important; visibility: hidden !important; }
+
+        /* Landed Items */
+        .landed-bee { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); z-index: 200; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; animation: happy-land 0.5s ease-out; }
+        .landed-bee .bee-icon { font-size: 2.5rem; }
+        .landed-bee .bee-label { font-size: 12px; padding: 2px 6px; margin-top: -8px; }
+        
+        /* Clouds */
         .cloud { position: absolute; font-size: 3rem; opacity: 0.6; pointer-events: none; z-index: 1; }
         .cloud-1 { top: 10%; left: 5%; animation: float-cloud 15s ease-in-out infinite; }
         .cloud-2 { top: 15%; right: 10%; font-size: 4rem; animation: float-cloud 20s ease-in-out infinite reverse; }
         .cloud-3 { top: 25%; left: 30%; font-size: 2.5rem; animation: float-cloud 18s ease-in-out infinite; animation-delay: -5s; }
         .cloud-4 { top: 5%; right: 25%; font-size: 2rem; animation: float-cloud 12s ease-in-out infinite reverse; animation-delay: -3s; }
         @keyframes float-cloud { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(20px); } }
-        
-        /* Honeypot target */
-        .honeypot-target { width: 100px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; position: relative; transition: transform 0.2s; }
-        .honeypot-icon { font-size: 3.5rem; line-height: 1; z-index: 1; }
-        .honeypot-label { font-size: 20px; font-weight: bold; color: #b45309; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; margin-top: 2px; z-index: 2; font-family: 'Noto Sans TC', sans-serif; text-align: center; display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
-        .honeypot-emoji { font-size: 1.8rem; margin-top: 4px; }
-        .honeypot-target.highlight { transform: scale(1.1); }
-        .honeypot-target.highlight .honeypot-icon { filter: drop-shadow(0 0 10px gold); }
-        .honeypot-target.matched .honeypot-label { color: #1565C0; }
-        
-        /* Landed bee on honeypot - hover on top */
-        .landed-bee-pot { position: absolute; top: -50px; left: 50%; transform: translateX(-50%); z-index: 200; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; animation: happy-land 0.5s ease-out; }
-        .landed-bee-pot .bee-icon { font-size: 2.5rem; }
-        .landed-bee-pot .bee-label { font-size: 13px; padding: 2px 6px; margin-top: -8px; }
-        
-        /* Hive cell target - same background as bee-flower */
-        .hive-area { width: 100%; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; padding: 20px; gap: 10px; background: #b3ffb3; min-height: 150px; }
-        .hive-cell { width: 100px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: transform 0.2s, filter 0.2s; }
-        .hive-cell-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 5px; }
-        .hive-label { font-size: 18px; font-weight: bold; color: #78350f; font-family: 'Noto Sans TC', sans-serif; line-height: 1.2; }
-        .hive-emoji { font-size: 1.6rem; margin-top: 4px; }
-        .hive-cell.highlight { transform: scale(1.1); filter: drop-shadow(0 0 10px gold); }
-        .hive-cell.matched { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
-        .hive-cell.matched .hive-label { color: #1565C0; }
-        .landed-pot-hive { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); z-index: 200; pointer-events: none; font-size: 1.8rem; animation: happy-land 0.5s ease-out; }
-        
-        /* Honeypot draggable */
-        .honeypot-item { width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; cursor: grab; z-index: 100; position: relative; animation: float 3s ease-in-out infinite; touch-action: none; }
-        .honeypot-item-icon { font-size: 3rem; line-height: 1; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2)); }
-        .honeypot-item-label { background: rgba(255,255,255,0.95); border: 2px solid #b45309; border-radius: 12px; padding: 4px 12px; font-size: 16px; font-weight: 900; color: #92400e; margin-top: -10px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 101; }
-        .dragging-clone { position: fixed; z-index: 99999; pointer-events: none; transform: scale(1.2) rotate(-10deg); opacity: 0.9; }
-        .ghost { opacity: 0.3; }
-        .highlight { transform: scale(1.1); transition: transform 0.2s; }
-        .highlight .flower-icon { filter: drop-shadow(0 0 10px gold); }
-        .landed-bee { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); z-index: 200; pointer-events: none; display: flex; flex-direction: column; align-items: center; animation: happy-land 0.5s ease-out; }
-        .landed-bee .bee-label { transform: scale(0.9); margin-top: -10px; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes happy-land { 0% { transform: translateX(-50%) scale(1.5); } 100% { transform: translateX(-50%) scale(1); } }
+        @keyframes happy-land { 0% { transform: translateX(-50%) scale(0.1); } 80% { transform: translateX(-50%) scale(1.2); } 100% { transform: translateX(-50%) scale(1); } }
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
-        .animate-pop { animation: pop 0.3s ease-out; }
-        .animate-shake { animation: shake 0.4s ease-out; }
-        
-        /* Tutorial Hand Demo */
-        #tutorial-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        #tutorial-overlay.hidden { display: none; }
-        .tutorial-hand { font-size: 4rem; position: absolute; animation: hand-demo 2.5s ease-in-out infinite; pointer-events: none; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3)); }
-        @keyframes hand-demo {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-            20% { transform: translate(0, -10px) rotate(-5deg); opacity: 1; }
-            50% { transform: translate(80px, 120px) rotate(5deg); opacity: 1; }
-            70% { transform: translate(80px, 120px) rotate(0deg); opacity: 0.8; }
-            100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-        }
-        .tutorial-text { position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); background: white; padding: 15px 30px; border-radius: 20px; font-size: 1.3rem; font-weight: bold; color: #333; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .tutorial-tap { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); background: var(--honey-yellow); padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; font-weight: bold; color: #78350F; border: 3px solid #78350F; cursor: pointer; }
-        
+
         /* Listen Game */
-        .listen-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 100%); }
-        .sentence-box { font-size: 1.5rem; background: white; padding: 25px 30px; border-radius: 16px; border: 3px solid var(--bee-black); margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; line-height: 1.6; }
-        .word-bank { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 500px; }
-        .word-option { min-width: 90px; padding: 12px 18px; background: var(--honey-yellow); border: 3px solid var(--bee-black); border-radius: 16px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
-        .word-option:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .listen-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 15px; background: linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 100%); overflow-y: auto; padding-bottom: 90px; }
+        .sentence-box-compact { font-size: 1.3rem; background: white; padding: 15px; border-radius: 16px; border: 3px solid var(--bee-black); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; width: 100%; line-height: 1.5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: center; }
+        .inline-speaker { background: #E3F2FD; border: 2px solid #42A5F5; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; margin-right: 8px; flex-shrink: 0; }
+        .word-bank { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 500px; width: 100%; }
+        .word-option { min-width: 70px; padding: 8px 12px; background: var(--honey-yellow); border: 2px solid var(--bee-black); border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
         .word-option:active { transform: scale(0.95); }
         .word-option.selected { background: #FFA500; transform: scale(1.05); }
         .word-option.correct { background: #81C784; border-color: #2E7D32; }
         .word-option.wrong { background: #E57373; border-color: #C62828; }
-        .blank-spot { display: inline-block; min-width: 100px; border-bottom: 3px dashed var(--bee-black); color: #1976D2; font-weight: bold; padding: 2px 8px; margin: 0 4px; transition: all 0.3s; text-align: center; }
+        .blank-spot { display: inline-block; min-width: 60px; border-bottom: 2px dashed var(--bee-black); color: #1976D2; font-weight: bold; padding: 0 4px; transition: all 0.3s; text-align: center; }
         .blank-spot.filled { border-bottom-style: solid; background: rgba(255,215,0,0.3); border-radius: 4px; }
-        .blank-spot.correct { background: rgba(129,199,132,0.4); color: #2E7D32; }
-        .play-sentence-btn { background: linear-gradient(135deg, #42A5F5, #1976D2); color: white; border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s; margin-bottom: 20px; }
-        .play-sentence-btn:hover { transform: scale(1.1); }
-        .play-sentence-btn:active { transform: scale(0.95); }
-        .question-progress { display: flex; gap: 8px; margin-top: 25px; }
-        .progress-dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; border: 2px solid #999; transition: all 0.3s; }
+        
+        .game-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: rgba(255,255,255,0.9); border-top: 1px solid #ddd; display: flex; justify-content: center; align-items: center; gap: 15px; z-index: 500; }
+        .next-question-btn { background: linear-gradient(135deg, #81C784, #4CAF50); color: white; border: none; padding: 12px 30px; border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 250px; }
+        .next-question-btn.hidden { display: none; }
+        .progress-dots { display: flex; gap: 6px; }
+        .progress-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; border: 1px solid #999; }
         .progress-dot.current { background: var(--honey-yellow); border-color: #F59E0B; transform: scale(1.2); }
         .progress-dot.completed { background: #81C784; border-color: #2E7D32; }
-        .next-question-btn { margin-top: 25px; background: linear-gradient(135deg, #81C784, #4CAF50); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 1.3rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s; }
-        .next-question-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
-        .next-question-btn:active { transform: scale(0.98); }
-        .next-question-btn.hidden { display: none; }
-        
-        /* Story Drawing Activity */
+
+        /* Story Drawing */
         .draw-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f5f5f5; }
         .draw-canvas-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 10px; }
         .draw-canvas { border: 3px solid var(--bee-black); border-radius: 10px; background: white; touch-action: none; max-width: 100%; max-height: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .draw-toolbar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: white; border-top: 2px solid #ddd; flex-wrap: wrap; }
-        .tool-btn { width: 44px; height: 44px; border-radius: 10px; border: 2px solid #ddd; background: white; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .tool-btn:hover { background: #f0f0f0; }
-        .tool-btn.active { border-color: var(--honey-yellow); background: #fffbeb; box-shadow: 0 0 0 2px var(--honey-yellow); }
-        .color-btn { width: 36px; height: 36px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
-        .color-btn:hover { transform: scale(1.1); }
-        .color-btn.active { border-color: var(--bee-black); transform: scale(1.15); }
-        .brush-size { display: flex; align-items: center; gap: 5px; padding: 0 10px; border-left: 2px solid #ddd; border-right: 2px solid #ddd; margin: 0 5px; }
-        .size-dot { border-radius: 50%; background: var(--bee-black); cursor: pointer; transition: all 0.2s; }
-        .size-dot:hover { opacity: 0.7; }
-        .size-dot.active { box-shadow: 0 0 0 2px var(--honey-yellow); }
-        .save-btn { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .save-btn:hover { transform: scale(1.05); }
-        .done-btn { background: linear-gradient(135deg, var(--honey-yellow), #F59E0B); color: #78350F; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        /* Wrap toolbar */
+        .draw-toolbar { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; background: white; border-top: 2px solid #ddd; flex-wrap: wrap; padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+        .tool-btn { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ccc; background: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .tool-btn.active { background: #FFF9C4; border-color: #F59E0B; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); flex-shrink: 0; }
+        .color-btn.active { transform: scale(1.1); border-color: #333; }
+        .done-btn { background: #FCD34D; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+        /* Themes Grid */
+        .themes-row-4{ display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 800px; margin: 0 auto; padding: 10px; }
+        .theme-tile{ aspect-ratio: 1 / 1; padding: 6px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; background: white; border: 2px solid var(--bee-black); border-radius: 12px; cursor: pointer; }
+        .theme-tile .emoji{ font-size: 2.5rem; line-height: 1; }
+        .theme-tile .label{ font-weight: 800; font-size: 0.85rem; color: var(--bee-black); line-height: 1.1; margin-top: 4px; }
+        .theme-tile .modes { width: 100%; display:flex; flex-direction:column; gap: 4px; font-size: 0.9rem; font-weight: 800; }
+        .theme-tile .mode-row{ display:flex; align-items:center; justify-content:center; gap: 4px; }
+        .text-yellow-400 { color: #FACC15; }
         
-        /* Responsive */
-        @media (max-width: 600px) {
-            .books-grid { grid-template-columns: 1fr; padding: 15px; gap: 15px; }
-            .book-cover { font-size: 3rem; padding: 15px; }
-            .book-title { font-size: 1.2rem; }
-            .bee-item { width: 70px; height: 70px; }
-            .bee-icon { font-size: 2.8rem; }
-            .bee-label { font-size: 14px; }
-            .flower-target { width: 75px; height: 100px; }
-            .flower-icon { font-size: 2.8rem; }
-            .flower-label { font-size: 15px; }
-            .sentence-box { font-size: 1.2rem; padding: 18px; }
-            .word-option { padding: 10px 14px; font-size: 1rem; min-width: 75px; }
-        }
+        /* Modals */
+        #audio-modal, #modal-feedback, #modal-reset { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-content { background: white; border-radius: 1rem; padding: 2rem; text-align: center; border: 4px solid #FBBF24; width: 90%; max-width: 400px; }
+        
+        .animate-pop { animation: pop 0.3s ease-out; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Orientation Overlay -->
     <div id="orientation-overlay">
         <div class="rotate-icon">📱</div>
-        <h2 class="text-2xl font-bold mb-2">Please Rotate Your Device</h2>
-        <p class="text-lg opacity-90">This game works best in landscape mode</p>
+        <h2 class="text-2xl font-bold mb-2">Rotate Device</h2>
     </div>
 
     <div id="app" class="container"></div>
 
-    <!-- Start Modal -->
+    <!-- Modals -->
     <div id="audio-modal">
         <div class="modal-content">
-            <div style="font-size: 3.75rem; margin-bottom: 1rem;">🐝</div>
-            <h2 class="text-2xl font-bold text-yellow-800 mb-4">Let's Play Bumble & Bee!</h2>
-            <p class="mb-6 text-gray-600">Tap the button below to start with sound.</p>
-            <button id="start-btn" class="start-btn">Start Playing 🔊</button>
+            <div style="font-size: 3.5rem; margin-bottom: 0.5rem; display: flex; justify-content: center; gap: 10px;">
+                <span>🐝</span><span>🐸</span><span>🐝</span>
+            </div>
+            <h2 class="text-2xl font-bold mb-6" style="line-height: 1.2;">
+                <span style="color: #F97316;">Bumble</span> 
+                <span style="color: #FACC15;">and Bee</span>
+            </h2>
+            <button id="start-btn" class="start-btn" style="width:100%; background:#FBBF24; padding:12px; border-radius:10px; font-weight:bold; font-size: 1.2rem;">Start Playing 🔊</button>
         </div>
     </div>
 
-    <!-- Feedback Modal -->
-    <div id="modal-feedback" class="fixed inset-0 bg-black bg-opacity-70 z-[9999] flex items-center justify-center hidden">
-        <div class="bg-white p-8 rounded-2xl border-4 border-yellow-400 text-center max-w-sm w-full mx-4 animate-pop">
-            <div id="fb-icon" class="text-6xl mb-4">🏆</div>
+    <div id="modal-feedback" class="hidden">
+        <div class="modal-content animate-pop">
+            <div id="fb-icon" class="text-6xl mb-2">🏆</div>
             <h2 id="fb-title" class="text-2xl font-bold mb-2">Great Job!</h2>
-            <div id="fb-stars" class="text-4xl mb-4">⭐⭐⭐</div>
-            <p id="fb-message" class="text-gray-600 mb-6">You completed the level!</p>
-            <button id="fb-continue-btn" class="start-btn">Continue</button>
+            <div id="fb-stars" class="text-4xl mb-4 text-yellow-400">⭐⭐⭐</div>
+            <button id="fb-continue-btn" class="start-btn" style="width:100%; background:#FBBF24; padding:12px; border-radius:10px; font-weight:bold;">Continue</button>
         </div>
     </div>
 
-    <!-- Reset Confirmation Modal -->
-    <div id="modal-reset" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
-        <div class="bg-white p-8 rounded-2xl border-4 border-red-400 text-center max-w-sm w-full mx-4 animate-pop">
-            <div class="text-5xl mb-4">⚠️</div>
-            <h2 class="text-xl font-bold mb-4 text-red-600">Reset All Progress?</h2>
-            <p class="text-gray-600 mb-6">This will delete all your stars and completed games. This cannot be undone!</p>
-            <button id="confirm-reset-btn" class="start-btn" style="background-color: #EF4444; color: white;">Yes, Reset Everything</button>
-            <button id="cancel-reset-btn" class="cancel-btn">Cancel</button>
+    <div id="modal-reset" class="hidden">
+        <div class="modal-content animate-pop" style="border-color: #EF4444;">
+            <div class="text-4xl mb-2">⚠️</div>
+            <h2 class="text-lg font-bold mb-4">Reset Progress?</h2>
+            <div class="flex gap-2">
+                <button id="confirm-reset-btn" style="flex:1; background:#EF4444; color:white; padding:10px; border-radius:8px;">Reset</button>
+                <button id="cancel-reset-btn" style="flex:1; background:#E5E7EB; padding:10px; border-radius:8px;">Cancel</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // 1. DATA
-        // ============================================
+        // DATA
         const MANIFEST = {
             books: [
-                { id: "1", title: "Let's BEE Thankful", cover: "🎃🍂🥧", subtitle: "Fall & Thanksgiving", class: "book1" },
-                { id: "2", title: "Let's Play Make BEE-lieve", cover: "🎭🗺️🏴‍☠️", subtitle: "Imagination & Play", class: "book2" },
-                { id: "3", title: "Don't Worry, BEE Happy", cover: "📸😊💃", subtitle: "Friendship & Feelings", class: "book3" }
-            ],
-            gameTypes: [
-                { id: "vocab", title: "Vocabulary Match", cover: "🐝🌼", subtitle: "Drag bees to flowers", class: "book1" },
-                { id: "listen", title: "Listen & Match", cover: "👂🔊", subtitle: "Listen, then fill blanks", class: "book2" },
-                { id: "story", title: "Story Activities", cover: "🎨✏️", subtitle: "Drawing & Coloring", class: "book3" }
+                { id: "1", title: "Let's BEE Thankful", cover: "🎃🥧", subtitle: "Fall & Thanksgiving", class: "book1" },
+                { id: "2", title: "Let's Play Make BEE-lieve", cover: "🎭🗺️", subtitle: "Imagination & Play", class: "book2" },
+                { id: "3", title: "Don't Worry, BEE Happy", cover: "📸😊", subtitle: "Friendship & Feelings", class: "book3" }
             ]
         };
 
         const BOOK_DATA = {
             "1": {
                 games: {
-                    "vocab": { sets: [
-                        { id: "B1-V01", title: "Set 1: Fall Fun", icon: "🍂" },
-                        { id: "B1-V02", title: "Set 2: Baking", icon: "🥧" },
-                        { id: "B1-V03", title: "Set 3: Winter", icon: "❄️" }
-                    ]},
-                    "listen": { sets: [
-                        { id: "B1-L01", title: "Set 1: Fall Sentences", icon: "🍁" },
-                        { id: "B1-L02", title: "Set 2: Baking Sentences", icon: "🧁" }
-                    ]},
-                "story": { sets: [
-                        { id: "B1-S01", title: "Paint the Pumpkin", icon: "🎃" }
-                    ]}
+                    "vocab": { sets: [{ id: "B1-V01", title: "Fall Fun", icon: "🍂" }, { id: "B1-V02", title: "Baking", icon: "🥧" }, { id: "B1-V03", title: "Winter", icon: "❄️" }]},
+                    "listen": { sets: [{ id: "B1-L01", title: "Fall Sentences", icon: "🍁" }, { id: "B1-L02", title: "Baking Sentences", icon: "🧁" }, { id: "B1-L03", title: "Winter Sentences", icon: "❄️" }]},
+                    "story": { sets: [{ id: "B1-S01", title: "Paint the Pumpkin", icon: "🎃" }]}
                 },
                 gameData: {
-                    "B1-V01": {
-                        type: "vocab_match",
-                        motif: "bee-flower",
-                        title: "Fall Fun Words",
-                        instruction: "Match the bees to the flowers!",
-                        pairs: [
-                            { id: "paint", en: "paint", zh: "畫畫", emoji: "🎨" },
-                            { id: "jump", en: "jump", zh: "跳躍", emoji: "🦘" },
-                            { id: "wish", en: "wish", zh: "許願", emoji: "🌟" },
-                            { id: "pumpkin", en: "pumpkin", zh: "南瓜", emoji: "🎃" },
-                            { id: "list", en: "list", zh: "清單", emoji: "📝" }
-                        ]
-                    },
-                    "B1-V02": {
-                        type: "vocab_match",
-                        motif: "bee-honeypot",
-                        title: "Baking Words",
-                        instruction: "Help the bees find their honey pots!",
-                        pairs: [
-                            { id: "bake", en: "bake", zh: "烘烤", emoji: "👩‍🍳" },
-                            { id: "forget", en: "forget", zh: "忘記", emoji: "🤔" },
-                            { id: "pie", en: "pie", zh: "派", emoji: "🥧" },
-                            { id: "butter", en: "butter", zh: "奶油", emoji: "🧈" },
-                            { id: "get", en: "get", zh: "取得", emoji: "🤲" }
-                        ]
-                    },
-                    "B1-V03": {
-                        type: "vocab_match",
-                        motif: "honeypot-hive",
-                        title: "Winter Words",
-                        instruction: "Put the honey pots in the hive!",
-                        pairs: [
-                            { id: "winter", en: "winter", zh: "冬天", emoji: "❄️" },
-                            { id: "room", en: "room", zh: "房間", emoji: "🛋️" },
-                            { id: "friend", en: "friend", zh: "朋友", emoji: "👫" },
-                            { id: "favorite", en: "favorite", zh: "最愛的", emoji: "❤️" },
-                            { id: "practice", en: "practice", zh: "練習", emoji: "📚" }
-                        ]
-                    },
-                    "B1-L01": {
-                        type: "listening_fill",
-                        title: "Fall Sentences",
-                        instruction: "Listen to the sentence and choose the missing word.",
-                        questions: [
-                            { 
-                                text: "____ in leaves was so much fun!", 
-                                blank: "Jumping",
-                                fullSentence: "Jumping in leaves was so much fun!",
-                                options: ["paint", "Jumping", "wish", "list"]
-                            },
-                            { 
-                                text: "I will look at our ____, Bumble.", 
-                                blank: "list",
-                                fullSentence: "I will look at our list, Bumble.",
-                                options: ["list", "jump", "wish", "pumpkin"]
-                            },
-                            { 
-                                text: "We ____  for a pumpkin!!!", 
-                                blank: "wish",
-                                fullSentence: "We wish for a pumpkin!!!",
-                                options: ["paint", "jump", "list", "wish"]
-                            },
-                            { 
-                                text: "We turned Froggy into a ____ !", 
-                                blank: "pumpkin",
-                                fullSentence: "We turned Froggy into a pumpkin!",
-                                options: ["paint", "pumpkin", "list", "jump"]
-                            },
-                            { 
-                                text: "Let's carve and ____ them!", 
-                                blank: "paint",
-                                fullSentence: "Let's carve and paint them!",
-                                options: ["paint", "jump", "pumpkin", "wish"]
-                            }
-                        ]
-                    },
-                   "B1-L02": {
-  type: "listening_fill",
-  title: "Apple Pie Sentences",
-  instruction: "Listen to the sentence and choose the missing word.",
-  questions: [
-    {
-      text: "I am about to ____ my famous apple pie!",
-      blank: "bake",
-      fullSentence: "I am about to bake my famous apple pie!",
-      options: ["butter", "bake", "forget", "pie"]
-    },
-    {
-      text: "Do not worry. We will ____ the butter.",
-      blank: "get",
-      fullSentence: "Do not worry. We will get the butter.",
-      options: ["get", "bake", "forget", "pie"]
-    },
-    {
-      text: "And we will not ____ .",
-      blank: "forget",
-      fullSentence: "And we will not forget.",
-      options: ["forget", "get", "bake", "butter"]
-    },
-    {
-      text: "Maybe I should write down ____ ?",
-      blank: "butter",
-      fullSentence: "Maybe I should write down butter?",
-      options: ["butter", "pie", "get", "forget"]
-    },
-    {
-      text: "Here you go, Froggy. Everything you need to bake your ____ !",
-      blank: "pie",
-      fullSentence: "Here you go, Froggy. Everything you need to bake your pie!",
-      options: ["pie", "butter", "bake", "forget"]
-    }
-  ]
-},
-
-                    "B1-S01": {
-                        type: "story_draw",
-                        title: "Paint the Pumpkin",
-                        instruction: "Color the pumpkin!",
-                        backgroundImage: "B1A1Pumpkin.svg"
-                    }
+                    "B1-V01": { type: "vocab_match", motif: "bee-flower", title: "Fall Fun Words", pairs: [
+                        { id: "paint", en: "paint", zh: "畫畫", emoji: "🎨" }, { id: "jump", en: "jump", zh: "跳躍", emoji: "🦘" },
+                        { id: "wish", en: "wish", zh: "許願", emoji: "🌟" }, { id: "pumpkin", en: "pumpkin", zh: "南瓜", emoji: "🎃" },
+                        { id: "list", en: "list", zh: "清單", emoji: "📝" }
+                    ]},
+                    "B1-V02": { type: "vocab_match", motif: "bee-honeypot", title: "Baking Words", pairs: [
+                        { id: "bake", en: "bake", zh: "烘烤", emoji: "👩‍🍳" }, { id: "forget", en: "forget", zh: "忘記", emoji: "🤔" },
+                        { id: "pie", en: "pie", zh: "派", emoji: "🥧" }, { id: "butter", en: "butter", zh: "奶油", emoji: "🧈" },
+                        { id: "get", en: "get", zh: "取得", emoji: "🤲" }
+                    ]},
+                    "B1-V03": { type: "vocab_match", motif: "honeypot-hive", title: "Winter Words", pairs: [
+                        { id: "winter", en: "winter", zh: "冬天", emoji: "❄️" }, { id: "room", en: "room", zh: "房間", emoji: "🛋️" },
+                        { id: "friend", en: "friend", zh: "朋友", emoji: "👫" }, { id: "favorite", en: "favorite", zh: "最愛的", emoji: "❤️" },
+                        { id: "practice", en: "practice", zh: "練習", emoji: "📚" }
+                    ]},
+                    "B1-L01": { type: "listening_fill", title: "Fall Sentences", questions: [
+                        { text: "____ in leaves was so much fun!", blank: "Jumping", fullSentence: "Jumping in leaves was so much fun!", options: ["paint", "Jumping", "wish", "list"] },
+                        { text: "I will look at our ____, Bumble.", blank: "list", fullSentence: "I will look at our list, Bumble.", options: ["list", "jump", "wish", "pumpkin"] },
+                        { text: "We ____  for a pumpkin!!!", blank: "wish", fullSentence: "We wish for a pumpkin!!!", options: ["paint", "jump", "list", "wish"] },
+                        { text: "We turned Froggy into a ____ !", blank: "pumpkin", fullSentence: "We turned Froggy into a pumpkin!", options: ["paint", "pumpkin", "list", "jump"] },
+                        { text: "Let's carve and ____ them!", blank: "paint", fullSentence: "Let's carve and paint them!", options: ["paint", "jump", "pumpkin", "wish"] }
+                    ]},
+                    "B1-L02": { type: "listening_fill", title: "Apple Pie Sentences", questions: [
+                        { text: "I am about to ____ my famous apple pie!", blank: "bake", fullSentence: "I am about to bake my famous apple pie!", options: ["butter", "bake", "forget", "pie"] },
+                        { text: "Do not worry. We will ____ the butter.", blank: "get", fullSentence: "Do not worry. We will get the butter.", options: ["get", "bake", "forget", "pie"] },
+                        { text: "And we will not ____ .", blank: "forget", fullSentence: "And we will not forget.", options: ["forget", "get", "bake", "butter"] },
+                        { text: "Maybe I should write down ____ ?", blank: "butter", fullSentence: "Maybe I should write down butter?", options: ["butter", "pie", "get", "forget"] },
+                        { text: "Here you go, Froggy. Everything you need to bake your ____ !", blank: "pie", fullSentence: "Here you go, Froggy. Everything you need to bake your pie!", options: ["pie", "butter", "bake", "forget"] }
+                    ]},
+                    "B1-L03": { type: "listening_fill", title: "Winter Sentences", questions: [
+                        { text: "____ is almost here. I can feel it in the air.", blank: "Winter", fullSentence: "Winter is almost here. I can feel it in the air.", options: ["Winter", "room", "friends", "favorite"] },
+                        { text: "It is my ____ season.", blank: "favorite", fullSentence: "It is my favorite season.", options: ["favorite", "practice", "room", "Winter"] },
+                        { text: "I am not very good, but I have all winter to ____ !", blank: "practice", fullSentence: "I am not very good, but I have all winter to practice!", options: ["practice", "room", "favorite", "friends"] },
+                        { text: "There is not enough ____ !", blank: "room", fullSentence: "There is not enough room!", options: ["room", "Winter", "practice", "friends"] },
+                        { text: "I guess there is always room for marshmallows and ____ .", blank: "friends", fullSentence: "I guess there is always room for marshmallows and friends.", options: ["friends", "favorite", "room", "practice"] }
+                    ]},
+                    "B1-S01": { type: "story_draw", title: "Paint the Pumpkin", backgroundImage: "B1A1Pumpkin.svg" }
                 }
             },
-            "2": { games: {}, gameData: {} },
-            "3": { games: {}, gameData: {} }
+            "2": { games: {}, gameData: {} }, "3": { games: {}, gameData: {} }
         };
 
-        // ============================================
-        // 2. CORE MODULES
-        // ============================================
-        
-        // Storage Manager
+        const BOOK_THEMES = {
+            "1": { themes: [
+                { id: "T01", title: "Pumpkin", emoji: "🎃", vocabId: "B1-V01", listenId: "B1-L01", headerTitle: "Chapter 1: Let's Paint Pumpkins!" },
+                { id: "T02", title: "Apple Pie", emoji: "🥧", vocabId: "B1-V02", listenId: "B1-L02", headerTitle: "Chapter 2: Froggy's Famous Apple Pie" },
+                { id: "T03", title: "Winter", emoji: "❄️", vocabId: "B1-V03", listenId: "B1-L03", headerTitle: "Chapter 3: Froggy's Winter Hideout" }
+            ], storyTitle: "Activities" },
+            "2": { themes: [{id:"T01",title:"Chapter 1"},{id:"T02",title:"Chapter 2"},{id:"T03",title:"Chapter 3"}] },
+            "3": { themes: [{id:"T01",title:"Chapter 1"},{id:"T02",title:"Chapter 2"},{id:"T03",title:"Chapter 3"}] }
+        };
+
+        // CORE MODULES
         class Store {
-            constructor() {
-                this.KEY = 'bumble_bee_progress_v2';
-                this.state = this.load();
+            constructor() { this.KEY = 'bumble_bee_v3'; this.state = this.load(); }
+            load() { try { return JSON.parse(localStorage.getItem(this.KEY)) || this.getDefault(); } catch { return this.getDefault(); } }
+            getDefault() { return { version: 3, games: {}, tutorialShown: false }; }
+            save() { localStorage.setItem(this.KEY, JSON.stringify(this.state)); }
+            markTutorialShown() { this.state.tutorialShown = true; this.save(); }
+            hasTutorialBeenShown() { return this.state.tutorialShown; }
+            completeGame(id, stars, mistakes) {
+                const ex = this.state.games[id];
+                if (!ex || stars > ex.stars) { this.state.games[id] = { completed: true, stars, mistakes }; this.save(); }
             }
-            
-            load() {
-                try {
-                    const saved = localStorage.getItem(this.KEY);
-                    if (saved) return JSON.parse(saved);
-                } catch(e) { console.error('Failed to load progress:', e); }
-                return this.getDefault();
-            }
-            
-            getDefault() {
-                return { version: 2, totalStars: 0, games: {}, tutorialShown: false };
-            }
-            
-            save() {
-                try {
-                    // Recalculate total stars
-                    this.state.totalStars = Object.values(this.state.games)
-                        .reduce((sum, g) => sum + (g.stars || 0), 0);
-                    localStorage.setItem(this.KEY, JSON.stringify(this.state));
-                } catch(e) { console.error('Failed to save progress:', e); }
-            }
-            
-            markTutorialShown() {
-                this.state.tutorialShown = true;
-                this.save();
-            }
-            
-            hasTutorialBeenShown() {
-                return this.state.tutorialShown === true;
-            }
-            
-            completeGame(gameId, stars, mistakes) {
-                const existing = this.state.games[gameId];
-                // Only update if new score is better
-                if (!existing || stars > existing.stars) {
-                    this.state.games[gameId] = { 
-                        completed: true, 
-                        stars: stars,
-                        mistakes: mistakes,
-                        timestamp: Date.now()
-                    };
-                    this.save();
-                }
-            }
-            
-            getGameProgress(gameId) {
-                return this.state.games[gameId] || null;
-            }
-            
-            isGameComplete(gameId) {
-                return !!this.state.games[gameId]?.completed;
-            }
-            
-            getStars(gameId) {
-                return this.state.games[gameId]?.stars || 0;
-            }
-            
-            getTotalStars() {
-                return this.state.totalStars || 0;
-            }
-            
-            getBookStars(bookId) {
-                let total = 0;
-                for (const [gameId, data] of Object.entries(this.state.games)) {
-                    if (gameId.startsWith(`B${bookId}-`)) {
-                        total += data.stars || 0;
-                    }
-                }
-                return total;
-            }
-            
-            reset() {
-                this.state = this.getDefault();
-                this.save();
-            }
+            getStars(id) { return this.state.games[id]?.stars || 0; }
+            isComplete(id) { return !!this.state.games[id]?.completed; }
+            getTotalStars() { return Object.values(this.state.games).reduce((s, g) => s + (g.stars||0), 0); }
+            reset() { this.state = this.getDefault(); this.save(); }
         }
 
-        // Sound Effects (Web Audio API - no external files)
         class SoundFX {
-            constructor() {
-                this.ctx = null;
-                this.enabled = false;
-            }
-            
-            init() {
-                try {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    this.enabled = true;
-                    // Unlock on iOS
-                    if (this.ctx.state === 'suspended') {
-                        this.ctx.resume();
-                    }
-                } catch(e) {
-                    console.warn('Web Audio not supported:', e);
-                }
-            }
-            
-            playTone(freq, duration, type = 'sine', volume = 0.3) {
-                if (!this.enabled || !this.ctx) return;
-                
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    
-                    gain.gain.setValueAtTime(volume, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-                    
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    
-                    osc.start(this.ctx.currentTime);
-                    osc.stop(this.ctx.currentTime + duration);
-                } catch(e) {
-                    console.warn('Sound play error:', e);
-                }
-            }
-            
-            correct() {
-                // Happy rising chime: C5 → E5 → G5
-                this.playTone(523, 0.15, 'sine', 0.25);
-                setTimeout(() => this.playTone(659, 0.15, 'sine', 0.25), 100);
-                setTimeout(() => this.playTone(784, 0.2, 'sine', 0.25), 200);
-            }
-            
-            incorrect() {
-                // Low buzz/wobble
-                this.playTone(180, 0.25, 'sawtooth', 0.2);
-                setTimeout(() => this.playTone(150, 0.25, 'sawtooth', 0.15), 150);
-            }
-            
-            complete() {
-                // Victory fanfare
-                const notes = [523, 659, 784, 1047];
-                notes.forEach((freq, i) => {
-                    setTimeout(() => this.playTone(freq, 0.3, 'sine', 0.25), i * 150);
-                });
-            }
-            
-            click() {
-                this.playTone(800, 0.05, 'sine', 0.15);
-            }
+            constructor() { this.ctx = null; this.enabled = false; }
+            init() { try { this.ctx = new (window.AudioContext||window.webkitAudioContext)(); this.enabled=true; if(this.ctx.state==='suspended') this.ctx.resume(); } catch(e){} }
+            play(f,t,type='sine') { if(!this.enabled||!this.ctx)return; const o=this.ctx.createOscillator(); const g=this.ctx.createGain(); o.type=type; o.frequency.value=f; g.gain.setValueAtTime(0.1,this.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.01,this.ctx.currentTime+t); o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime+t); }
+            correct() { this.play(523,0.1); setTimeout(()=>this.play(659,0.1),100); setTimeout(()=>this.play(784,0.2),200); }
+            incorrect() { this.play(180,0.3,'sawtooth'); }
+            click() { this.play(800,0.05); }
+            complete() { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.play(f,0.3),i*150)); }
         }
 
-        // Audio Manager (TTS + MP3 fallback for sentences)
         class AudioManager {
-            constructor() {
-                this.enabled = false;
-                this.synth = window.speechSynthesis;
-                this.audioCache = {};
-            }
-            
-            init() {
-                this.enabled = true;
-                // Warm up TTS
-                const u = new SpeechSynthesisUtterance('');
-                this.synth.speak(u);
-            }
-            
-            speak(text, rate = 0.9) {
-                if (!this.enabled || !text) return;
-                
-                this.synth.cancel();
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'en-US';
-                u.rate = rate;
-                this.synth.speak(u);
-            }
-            
-            speakWord(word) {
-                this.speak(word, 0.85);
-            }
-            
-            // Try MP3 first, fallback to TTS
-            async playSentence(gameId, questionIndex, fallbackText) {
-                if (!this.enabled) return;
-                
-                const mp3Path = `audio/${gameId}/q${questionIndex}.mp3`;
-                
-                // Check cache first
-                if (this.audioCache[mp3Path]) {
-                    try {
-                        this.audioCache[mp3Path].currentTime = 0;
-                        await this.audioCache[mp3Path].play();
-                        return;
-                    } catch(e) {
-                        // Fall through to TTS
-                    }
-                }
-                
-                // Try to load MP3
-                try {
-                    const audio = new Audio(mp3Path);
-                    audio.preload = 'auto';
-                    
-                    await new Promise((resolve, reject) => {
-                        audio.oncanplaythrough = resolve;
-                        audio.onerror = reject;
-                        setTimeout(reject, 2000); // 2s timeout
-                    });
-                    
-                    this.audioCache[mp3Path] = audio;
-                    await audio.play();
-                } catch(e) {
-                    // MP3 not available, use TTS
-                    console.log('MP3 not found, using TTS:', mp3Path);
-                    this.speak(fallbackText, 0.8);
-                }
-            }
+            constructor() { this.synth = window.speechSynthesis; }
+            init() { this.synth.speak(new SpeechSynthesisUtterance('')); }
+            speak(txt) { if(!txt)return; this.synth.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang='en-US'; u.rate=0.9; this.synth.speak(u); }
+            async playSentence(id, idx, txt) { this.speak(txt); }
         }
 
-        // Orientation Manager
-        class OrientationManager {
-            constructor() {
-                this.overlay = document.getElementById('orientation-overlay');
-                this.checkOrientation = this.checkOrientation.bind(this);
-            }
-            
-            init() {
-                this.checkOrientation();
-                window.addEventListener('resize', this.checkOrientation);
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(this.checkOrientation, 100);
-                });
-            }
-            
-            checkOrientation() {
-                const isMobile = window.innerWidth < 1024;
-                const isPortrait = window.innerHeight > window.innerWidth;
+        const app = { 
+            store: new Store(), 
+            sfx: new SoundFX(), 
+            audio: new AudioManager(), 
+            init() { 
+                document.getElementById('start-btn').onclick = () => {
+                    document.getElementById('audio-modal').style.display='none'; 
+                    app.sfx.init(); 
+                    app.audio.init(); 
+                    Views.home();
+                }; 
                 
-                if (isMobile && isPortrait) {
-                    this.overlay.classList.add('show');
-                } else {
-                    this.overlay.classList.remove('show');
-                }
-            }
-        }
-
-        // ============================================
-        // 3. ROUTER
-        // ============================================
-        class Router {
-            constructor(views) {
-                this.views = views;
-                window.addEventListener('hashchange', () => this.handleRoute());
-                this.handleRoute();
-            }
-            
-            handleRoute() {
-                const hash = window.location.hash.slice(1) || '/home';
-                const container = document.getElementById('app');
-                const parts = hash.split('/').filter(p => p);
+                document.getElementById('orientation-overlay').onclick = () => app.checkOrient(); 
+                window.addEventListener('resize', () => app.checkOrient());
+                app.checkOrient(); 
                 
-                try {
-                    if (parts[0] === 'home' || parts.length === 0) {
-                        this.views.home(container);
-                    } else if (parts[0] === 'book' && parts[1]) {
-                        this.views.gameTypeSelect(container, parts[1]);
-                    } else if (parts[0] === 'types' && parts[1] && parts[2]) {
-                        this.views.gameList(container, parts[1], parts[2]);
-                    } else if (parts[0] === 'play' && parts[1] && parts[2]) {
-                        this.views.play(container, parts[1], parts[2]);
-                    } else {
-                        this.views.home(container);
-                    }
-                } catch(e) {
-                    console.error('Route error:', e);
-                    this.views.home(container);
-                }
-            }
-            
-            navigate(hash) {
-                window.location.hash = hash;
-            }
-        }
+                document.getElementById('confirm-reset-btn').onclick = () => {
+                    app.store.reset();
+                    document.getElementById('modal-reset').classList.add('hidden');
+                    Views.home();
+                }; 
+                document.getElementById('cancel-reset-btn').onclick = () => {
+                    document.getElementById('modal-reset').classList.add('hidden');
+                }; 
+            }, 
+            checkOrient() { 
+                const bad = window.innerWidth < 600 && window.innerHeight > window.innerWidth; 
+                document.getElementById('orientation-overlay').className = bad ? 'show' : ''; 
+            } 
+        };
 
-        // ============================================
-        // 4. VIEWS
-        // ============================================
+        // VIEWS
         const Views = {
-            home: (container) => {
-                const totalStars = app.store.getTotalStars();
-                
-                container.innerHTML = `
+            container: document.getElementById('app'),
+            
+            home() {
+                const stars = app.store.getTotalStars();
+                this.container.innerHTML = `
                     <div class="nav-header">
-                        <div style="width: 44px;"></div>
-                        <h1 class="text-2xl font-bold flex-1 text-center text-gray-800">📚 Select a Book</h1>
-                        <button class="settings-btn" onclick="app.showResetModal()" title="Reset Progress">🗑️</button>
-                    </div>
-                    <div class="text-center py-3">
-                        <span class="total-stars">⭐ ${totalStars} Stars Collected</span>
+                        <div class="star-badge text-yellow-500">⭐ ${stars}</div>
+                        <div class="nav-title-block"><div class="nav-main-title">📚 Select a Book</div></div>
+                        <button class="settings-btn" onclick="document.getElementById('modal-reset').classList.remove('hidden')">⟲</button>
                     </div>
                     <div class="books-grid overflow-y-auto pb-10">
-                        ${MANIFEST.books.map(book => {
-                            const bookStars = app.store.getBookStars(book.id);
-                            const maxStars = Views.getMaxStarsForBook(book.id);
+                        ${MANIFEST.books.map(b => {
+                            const earned = this.getBookStars(b.id);
                             return `
-                                <div class="book-card ${book.class}" onclick="window.location.hash='#/book/${book.id}'">
-                                    <div class="book-cover">${book.cover}</div>
-                                    <div class="book-title">${book.title}</div>
-                                    <div class="text-yellow-400 text-xl mb-1">${Views.renderStars(bookStars, maxStars)}</div>
-                                    <div class="book-progress">${book.subtitle}</div>
-                                </div>
-                            `;
+                                <div class="book-card ${b.class}" onclick="Views.bookThemes('${b.id}')">
+                                    <div class="book-cover">${b.cover}</div>
+                                    <div class="book-title">${b.title}</div>
+                                    <div class="text-yellow-400" style="font-size:1.5rem; letter-spacing:2px;">${this.renderStars(earned, 9)}</div>
+                                </div>`;
                         }).join('')}
+                    </div>`;
+            },
+
+            bookThemes(bid) {
+                const b = MANIFEST.books.find(x => x.id === bid);
+                const themes = BOOK_THEMES[bid]?.themes || [];
+                const storySets = BOOK_DATA[bid]?.games?.story?.sets || [];
+                const completedStories = storySets.filter(s => app.store.isComplete(s.id)).length;
+
+                while(themes.length < 3) themes.push({id:`T0${themes.length+1}`, title:`Chapter ${themes.length+1}`, emoji:'🔒'});
+
+                this.container.innerHTML = `
+                    <div class="nav-header">
+                        <button class="back-btn" onclick="Views.home()">←</button>
+                        <div class="nav-title-block">
+                            <div class="nav-main-title">${b.title}</div>
+                        </div>
+                        <div style="width:40px"></div>
                     </div>
-                `;
+                    <div class="overflow-y-auto" style="flex:1;">
+                        <div class="themes-row-4 mt-4">
+                            ${themes.slice(0,3).map(t => {
+                                const vStars = t.vocabId ? app.store.getStars(t.vocabId) : 0;
+                                const lStars = t.listenId ? app.store.getStars(t.listenId) : 0;
+                                const locked = !t.vocabId && !t.listenId;
+                                const stars = (n) => `<span class="text-yellow-400 tracking-tighter">${'★'.repeat(Math.min(3,n))}${'☆'.repeat(3-Math.min(3,n))}</span>`;
+                                
+                                return `
+                                <div class="theme-tile ${locked?'opacity-60':''}" onclick="${locked?'':`Views.themeSelect('${bid}','${t.id}')`}">
+                                    <div class="emoji">${t.emoji||'📘'}</div>
+                                    <div class="label" style="font-size:1rem;">${t.title}</div>
+                                    <div class="modes">
+                                        <div class="mode-row"><span>🔡</span>${t.vocabId ? stars(vStars) : '⏳'}</div>
+                                        <div class="mode-row"><span>👂</span>${t.listenId ? stars(lStars) : '⏳'}</div>
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                            
+                            <div class="theme-tile" onclick="Views.storyList('${bid}')">
+                                <div class="emoji">🎨</div>
+                                <div class="label" style="font-size:1rem;">Activities</div>
+                                <div class="modes">
+                                    <div class="mode-row text-green-600">${completedStories}/${Math.max(1, storySets.length)} Done</div>
+                                    <div class="mode-row"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            },
+
+            themeSelect(bid, tid) {
+                const b = MANIFEST.books.find(x => x.id === bid);
+                const t = BOOK_THEMES[bid].themes.find(x => x.id === tid);
+                const vStars = t.vocabId ? app.store.getStars(t.vocabId) : 0;
+                const lStars = t.listenId ? app.store.getStars(t.listenId) : 0;
+                const rStars = (n) => `<span class="text-yellow-400 text-2xl tracking-widest">${'★'.repeat(n)}${'☆'.repeat(3-n)}</span>`;
+
+                this.container.innerHTML = `
+                    <div class="nav-header">
+                        <button class="back-btn" onclick="Views.bookThemes('${bid}')">←</button>
+                        <div class="nav-title-block">
+                            <div class="nav-main-title">${t.headerTitle || t.title}</div>
+                        </div>
+                        <div style="width:40px"></div>
+                    </div>
+                    <div class="overflow-y-auto mt-4 p-4 flex flex-wrap justify-center gap-4">
+                        <div class="book-card book${bid} ${!t.vocabId?'opacity-50':''}" style="width:100%; max-width:280px;" onclick="${t.vocabId?`Views.play('${bid}','${t.vocabId}','${tid}')`:''}">
+                            <div class="book-cover">🔤🧩</div>
+                            <div class="book-title" style="font-size:1.5rem;">Vocabulary</div>
+                            ${t.vocabId ? rStars(vStars) : '<div class="book-progress">Coming Soon</div>'}
+                        </div>
+                        <div class="book-card book${bid} ${!t.listenId?'opacity-50':''}" style="width:100%; max-width:280px;" onclick="${t.listenId?`Views.play('${bid}','${t.listenId}','${tid}')`:''}">
+                            <div class="book-cover">👂🔊</div>
+                            <div class="book-title" style="font-size:1.5rem;">Listening</div>
+                            ${t.listenId ? rStars(lStars) : '<div class="book-progress">Coming Soon</div>'}
+                        </div>
+                    </div>`;
             },
             
-            gameTypeSelect: (container, bookId) => {
-                const book = MANIFEST.books.find(b => b.id === bookId);
-                if (!book) { Views.home(container); return; }
-                
-                container.innerHTML = `
+            play(bid, gid, tid) {
+                const gData = BOOK_DATA[bid].gameData[gid];
+                if(gData.type === 'vocab_match') new VocabGame(bid, gid, tid, gData).start();
+                if(gData.type === 'listening_fill') new ListenGame(bid, gid, tid, gData).start();
+                if(gData.type === 'story_draw') new DrawGame(bid, gid, tid, gData).start();
+            },
+            
+            storyList(bid) {
+                const sets = BOOK_DATA[bid]?.games?.story?.sets || [];
+                this.container.innerHTML = `
                     <div class="nav-header">
-                        <button class="back-btn" onclick="window.location.hash='#/home'">←</button>
-                        <h1 class="text-xl font-bold flex-1 text-center text-gray-800">🎮 Choose Game Type</h1>
-                        <div style="width: 44px;"></div>
+                        <button class="back-btn" onclick="Views.bookThemes('${bid}')">←</button>
+                        <div class="nav-title-block"><div class="nav-main-title">Story Activities</div></div>
+                        <div style="width:40px"></div>
                     </div>
-                    <div class="selected-banner">${book.cover} ${book.title}</div>
-                    <div class="books-grid overflow-y-auto pb-10">
-                        ${MANIFEST.gameTypes.map(type => `
-                            <div class="book-card ${type.class} ${type.disabled ? 'opacity-50' : ''}" 
-                                 onclick="${type.disabled ? `alert('Coming Soon!')` : `window.location.hash='#/types/${bookId}/${type.id}'`}">
-                                <div class="book-cover">${type.cover}</div>
-                                <div class="book-title">${type.title}</div>
-                                <div class="book-progress">${type.subtitle}</div>
+                    <div class="books-grid overflow-y-auto mt-4">
+                        ${sets.map(s => `
+                            <div class="book-card book${bid}" onclick="Views.play('${bid}','${s.id}','story')">
+                                <div class="book-cover text-5xl">${s.icon}</div>
+                                <div class="book-title">${s.title}</div>
+                                <div class="book-progress">${app.store.isComplete(s.id)?'✓ Done':'Tap to Play'}</div>
                             </div>
                         `).join('')}
-                    </div>
-                `;
+                    </div>`;
             },
-            
-            gameList: (container, bookId, typeId) => {
-                const book = MANIFEST.books.find(b => b.id === bookId);
-                const type = MANIFEST.gameTypes.find(t => t.id === typeId);
-                if (!book || !type) { Views.home(container); return; }
-                
-                const bookData = BOOK_DATA[bookId];
-                const sets = bookData?.games[typeId]?.sets || [];
-                
-                if (sets.length === 0) {
-                    container.innerHTML = `
-                        <div class="nav-header">
-                            <button class="back-btn" onclick="window.location.hash='#/book/${bookId}'">←</button>
-                            <h1 class="text-xl font-bold flex-1 text-center">Coming Soon!</h1>
-                            <div style="width: 44px;"></div>
-                        </div>
-                        <div class="flex-1 flex items-center justify-center">
-                            <div class="text-center p-8">
-                                <div class="text-6xl mb-4">🚧</div>
-                                <p class="text-xl text-gray-600">This content is coming soon!</p>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                container.innerHTML = `
-                    <div class="nav-header">
-                        <button class="back-btn" onclick="window.location.hash='#/book/${bookId}'">←</button>
-                        <h1 class="text-xl font-bold flex-1 text-center text-gray-800">🔢 Choose a Set</h1>
-                        <div style="width: 44px;"></div>
-                    </div>
-                    <div class="selected-banner">${book.cover} ${type.title}</div>
-                    <div class="books-grid overflow-y-auto pb-10">
-                        ${sets.map((set, idx) => {
-                            const stars = app.store.getStars(set.id);
-                            const completed = app.store.isGameComplete(set.id);
-                            return `
-                                <div class="book-card book${bookId}" onclick="window.location.hash='#/play/${bookId}/${set.id}'">
-                                    <div class="book-cover text-5xl">${set.icon || '📚'}</div>
-                                    <div class="book-title">${set.title}</div>
-                                    <div class="text-yellow-400 text-2xl mb-1">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
-                                    <div class="book-progress">${completed ? '✓ Completed' : 'Tap to play'}</div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            },
-            
-            play: (container, bookId, gameId) => {
-                const bookData = BOOK_DATA[bookId];
-                const gameData = bookData?.gameData[gameId];
-                
-                if (!gameData) {
-                    container.innerHTML = `
-                        <div class="nav-header">
-                            <button class="back-btn" onclick="window.history.back()">←</button>
-                            <h1 class="text-xl font-bold flex-1 text-center">Error</h1>
-                            <div style="width: 44px;"></div>
-                        </div>
-                        <div class="flex-1 flex items-center justify-center">
-                            <div class="text-center p-8">
-                                <div class="text-6xl mb-4">❌</div>
-                                <p class="text-xl text-gray-600">Game data not found</p>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Launch appropriate game engine
-                if (gameData.type === 'vocab_match') {
-                    new VocabMatchGame(container, gameData, gameId, bookId).init();
-                } else if (gameData.type === 'listening_fill') {
-                    new ListeningFillGame(container, gameData, gameId, bookId).init();
-                } else if (gameData.type === 'story_draw') {
-                    new StoryDrawGame(container, gameData, gameId, bookId).init();
-                }
-            },
-            
-            // Helpers
-            renderStars(earned, max) {
-                if (max === 0) return '☆☆☆';
-                const full = Math.min(3, Math.floor((earned / max) * 3));
-                return '⭐'.repeat(full) + '☆'.repeat(3 - full);
-            },
-            
-            getMaxStarsForBook(bookId) {
-                const bookData = BOOK_DATA[bookId];
-                if (!bookData) return 0;
-                
-                let count = 0;
-                for (const type of Object.values(bookData.games)) {
-                    count += (type.sets?.length || 0) * 3;
-                }
-                return count;
-            }
+
+            getBookStars(bid) { let t=0; Object.keys(app.store.state.games).forEach(k=>{if(k.startsWith('B'+bid)) t+=app.store.state.games[k].stars||0;}); return t; },
+            renderStars(n, max) { const f = Math.min(3, Math.floor((n/max)*3)); return '★'.repeat(f)+'☆'.repeat(3-f); }
         };
 
-        // ============================================
-        // 5. GAME ENGINES
-        // ============================================
-        
-        class GameBase {
-            constructor(container, gameData, gameId, bookId) {
-                this.container = container;
-                this.data = gameData;
-                this.gameId = gameId;
-                this.bookId = bookId;
-                this.mistakes = 0;
-            }
-            
-            renderHeader(title) {
+        // GAMES
+        class Game {
+            constructor(bid, gid, tid, data) { this.bid=bid; this.gid=gid; this.tid=tid; this.data=data; this.mistakes=0; }
+            header() {
+                const backFn = this.tid === 'story' ? `Views.storyList('${this.bid}')` : `Views.themeSelect('${this.bid}','${this.tid}')`;
                 return `
-                    <div class="nav-header">
-                        <button class="back-btn" onclick="window.location.hash='#/types/${this.bookId}/${this.getTypeId()}'">←</button>
-                        <h1 class="text-lg font-bold flex-1 text-center text-gray-800 truncate px-2">${title || this.data.title}</h1>
-                        <div style="width: 44px;"></div>
-                    </div>
-                `;
+                <div class="nav-header">
+                    <button class="back-btn" onclick="${backFn}">←</button>
+                    <div class="nav-title-block"><div class="nav-main-title">${this.data.title}</div></div>
+                    <div style="width:40px"></div>
+                </div>`;
             }
-            
-            getTypeId() {
-                return this.data.type === 'vocab_match' ? 'vocab' : 'listen';
-            }
-            
-            calculateStars() {
-                if (this.mistakes === 0) return 3;
-                if (this.mistakes <= 2) return 2;
-                return 1;
-            }
-            
-            finishLevel() {
-                const stars = this.calculateStars();
-                app.store.completeGame(this.gameId, stars, this.mistakes);
+            finish() {
+                let stars = 3; if(this.mistakes > 0) stars=2; if(this.mistakes > 2) stars=1;
+                if(this.data.type === 'story_draw') stars = 0; 
+                
+                app.store.completeGame(this.gid, stars, this.mistakes);
                 app.sfx.complete();
                 
-                // Update modal
-                const starsDisplay = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-                document.getElementById('fb-stars').textContent = starsDisplay;
-                document.getElementById('fb-icon').textContent = stars === 3 ? '🏆' : stars === 2 ? '🎉' : '👍';
-                document.getElementById('fb-title').textContent = stars === 3 ? 'Perfect!' : stars === 2 ? 'Great Job!' : 'Good Try!';
-                document.getElementById('fb-message').textContent = 
-                    this.mistakes === 0 ? 'No mistakes!' : 
-                    `${this.mistakes} mistake${this.mistakes > 1 ? 's' : ''}`;
-                
+                const el = document.getElementById('modal-feedback');
+                document.getElementById('fb-stars').innerHTML = stars===0 ? '' : '★'.repeat(stars)+'☆'.repeat(3-stars);
                 document.getElementById('fb-continue-btn').onclick = () => {
-                    document.getElementById('modal-feedback').classList.add('hidden');
-                    window.location.hash = `#/types/${this.bookId}/${this.getTypeId()}`;
+                    el.classList.add('hidden');
+                    if(this.tid === 'story') Views.storyList(this.bid);
+                    else Views.themeSelect(this.bid, this.tid);
                 };
-                
-                document.getElementById('modal-feedback').classList.remove('hidden');
+                el.classList.remove('hidden');
             }
         }
 
-        // Vocabulary Match Game
-        class VocabMatchGame extends GameBase {
-            constructor(container, gameData, gameId, bookId) {
-                super(container, gameData, gameId, bookId);
-                this.matchedCount = 0;
-                this.activeItem = null;
-                this.cloneItem = null;
-                this.offsetX = 0;
-                this.offsetY = 0;
-                this.motif = gameData.motif || 'bee-flower';
+        class VocabGame extends Game {
+            start() {
+                const config = this.getConfig();
+                Views.container.innerHTML = `
+                    ${this.header()}
+                    <div style="flex:1; display:flex; flex-direction:column; width:100%; overflow:hidden;">
+                        <div id="sky-area" style="background:${config.sky}">${[1,2,3,4].map(i=>`<div class="cloud cloud-${i}">☁️</div>`).join('')}</div>
+                        <div id="garden-area" class="${config.gardenClass}" style="background:${config.garden}"></div>
+                    </div>`;
+                
+                const garden = document.getElementById('garden-area');
+                const sky = document.getElementById('sky-area');
+                
+                // SHUFFLE TARGETS (New)
+                const shuffledTargets = [...this.data.pairs].sort(() => Math.random() - 0.5);
+                
+                shuffledTargets.forEach(p => {
+                    const t = document.createElement('div');
+                    t.className = config.targetClass; t.dataset.id = p.id;
+                    t.innerHTML = config.renderTarget(p);
+                    garden.appendChild(t);
+                });
+                
+                // SHUFFLE DRAGGABLES (Existing, but kept separate)
+                [...this.data.pairs].sort(()=>Math.random()-0.5).forEach((p, i) => {
+                    const d = document.createElement('div');
+                    d.className = config.dragClass; d.dataset.id = p.id; d.dataset.word = p.en;
+                    d.innerHTML = config.renderDrag(p);
+                    d.style.animationDelay = (i*0.2)+'s';
+                    d.ontouchstart = d.onmousedown = (e) => this.drag(e, d);
+                    sky.appendChild(d);
+                });
+                this.matched = 0;
             }
             
-            init() {
-                const motifConfig = this.getMotifConfig();
-                
-                this.container.innerHTML = `
-                    ${this.renderHeader()}
-                    <div style="flex:1; display:flex; flex-direction:column; position:relative; width:100%; overflow:hidden;">
-                        <div id="sky-area" style="background: ${motifConfig.skyBg}">
-                            <div class="cloud cloud-1">☁️</div>
-                            <div class="cloud cloud-2">☁️</div>
-                            <div class="cloud cloud-3">☁️</div>
-                            <div class="cloud cloud-4">☁️</div>
-                        </div>
-                        <div id="garden-area" class="${motifConfig.gardenClass}" style="background: ${motifConfig.gardenBg}"></div>
-                    </div>
-                    <div id="tutorial-overlay" class="hidden">
-                        <div class="tutorial-hand">👆</div>
-                        <div class="tutorial-text">${motifConfig.tutorialText}</div>
-                        <button class="tutorial-tap" onclick="app.dismissTutorial()">Got it! ✓</button>
-                    </div>
-                `;
-                
-                this.setupGame();
-                
-                // Show tutorial on first play
-                if (!app.store.hasTutorialBeenShown()) {
-                    document.getElementById('tutorial-overlay').classList.remove('hidden');
-                }
+            getConfig() {
+                const m = this.data.motif;
+                if(m === 'honeypot-hive') return {
+                    sky: 'linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%)', garden:'', gardenClass:'hive-area',
+                    targetClass: 'hive-cell', dragClass: 'honeypot-item',
+                    renderTarget: (p) => `<div class="hive-cell-inner"><div class="hive-label zh-text">${p.zh}</div></div>`,
+                    renderDrag: (p) => `<div class="honeypot-item-icon">🍯</div><div class="honeypot-item-label">${p.en}</div>`,
+                    landed: (p) => `<div class="landed-pot-hive">🍯</div>`
+                };
+                if(m === 'bee-honeypot') return {
+                    sky: 'linear-gradient(180deg, #bfeaff 0%, #fef3c7 60%, #fde68a 100%)', 
+                    garden:'linear-gradient(180deg, #fde68a 0%, #fbbf24 100%)', gardenClass:'',
+                    targetClass: 'honeypot-target', dragClass: 'bee-item',
+                    renderTarget: (p) => `<div class="honeypot-icon">🍯</div><div class="honeypot-label zh-text">${p.zh}</div>`,
+                    renderDrag: (p) => `<div class="bee-icon">🐝</div><div class="bee-label">${p.en}</div>`,
+                    landed: (p) => `<div class="landed-bee"><div class="bee-icon">🐝</div><div class="bee-label">${p.en}</div></div>`
+                };
+                return {
+                    sky: 'linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%)', garden:'#b3ffb3', gardenClass:'',
+                    targetClass: 'flower-target', dragClass: 'bee-item',
+                    renderTarget: (p) => `<div class="flower-icon">🌼</div><div class="flower-label zh-text">${p.zh}</div>`,
+                    renderDrag: (p) => `<div class="bee-icon">🐝</div><div class="bee-label">${p.en}</div>`,
+                    landed: (p) => `<div class="landed-bee"><div class="bee-icon">🐝</div><div class="bee-label">${p.en}</div></div>`
+                };
             }
-            
-            getMotifConfig() {
-                const configs = {
-                    'bee-flower': {
-                        skyBg: 'linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%)',
-                        gardenBg: '#b3ffb3',
-                        gardenClass: '',
-                        dragIcon: '🐝',
-                        targetIcon: '🌼',
-                        dragClass: 'bee-item',
-                        targetClass: 'flower-target',
-                        landedClass: 'landed-bee',
-                        tutorialText: 'Drag the bee 🐝 to the matching flower 🌼'
-                    },
-                    'bee-honeypot': {
-                        skyBg: 'linear-gradient(180deg, #bfeaff 0%, #fef3c7 60%, #fde68a 100%)',
-                        gardenBg: 'linear-gradient(180deg, #fde68a 0%, #fbbf24 100%)',
-                        gardenClass: '',
-                        dragIcon: '🐝',
-                        targetIcon: '🍯',
-                        dragClass: 'bee-item',
-                        targetClass: 'honeypot-target',
-                        landedClass: 'landed-bee-pot',
-                        tutorialText: 'Drag the bee 🐝 to the matching honey pot 🍯'
-                    },
-                    'honeypot-hive': {
-                        skyBg: 'linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%)',
-                        gardenBg: '',
-                        gardenClass: 'hive-area',
-                        dragIcon: '🍯',
-                        targetIcon: '⬡',
-                        dragClass: 'honeypot-item',
-                        targetClass: 'hive-cell',
-                        landedClass: 'landed-pot-hive',
-                        tutorialText: 'Drag the honey pot 🍯 to the matching hive cell ⬡'
+
+            drag(e, el) {
+                e.preventDefault();
+                app.audio.speak(el.dataset.word); app.sfx.click();
+                
+                const clone = el.cloneNode(true);
+                clone.classList.add('dragging-clone'); clone.style.animation = 'none';
+                document.body.appendChild(clone);
+                
+                // FORCE opacity on element immediately
+                el.classList.add('opacity-0');
+                el.style.opacity = '0';
+
+                const r = el.getBoundingClientRect();
+                const tStart = e.touches ? e.touches[0] : e;
+                const offsetX = tStart.clientX - r.left;
+                const offsetY = tStart.clientY - r.top;
+
+                const move = (ev) => {
+                    const t = ev.touches ? ev.touches[0] : ev;
+                    clone.style.left = (t.clientX - offsetX) + 'px';
+                    clone.style.top = (t.clientY - offsetY) + 'px';
+                    
+                    // Highlight logic
+                    clone.style.display = 'none';
+                    const elem = document.elementFromPoint(t.clientX, t.clientY);
+                    clone.style.display = 'block';
+                    
+                    document.querySelectorAll('.highlight').forEach(h => h.classList.remove('highlight'));
+                    if(elem) {
+                        const target = elem.closest('[data-id]');
+                        if(target && !target.classList.contains('matched')) target.classList.add('highlight');
                     }
                 };
-                return configs[this.motif] || configs['bee-flower'];
-            }
-            
-            setupGame() {
-                const sky = document.getElementById('sky-area');
-                const garden = document.getElementById('garden-area');
-                const config = this.getMotifConfig();
                 
-                // Create targets based on motif
-                this.data.pairs.forEach(item => {
-                    const target = document.createElement('div');
-                    target.className = config.targetClass;
-                    target.dataset.id = item.id;
+                const end = (ev) => {
+                    const t = ev.changedTouches ? ev.changedTouches[0] : ev;
+                    clone.style.display = 'none';
+                    const target = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-id]');
                     
-                    if (this.motif === 'bee-flower') {
-                        target.innerHTML = `
-                            <div class="flower-icon">${config.targetIcon}</div>
-                            <div class="flower-label zh-text">
-                                <span>${item.zh}</span>
-                                <span class="flower-emoji">${item.emoji}</span>
-                            </div>
-                        `;
-                    } else if (this.motif === 'bee-honeypot') {
-                        target.innerHTML = `
-                            <div class="honeypot-icon">${config.targetIcon}</div>
-                            <div class="honeypot-label zh-text">
-                                <span>${item.zh}</span>
-                                <span class="honeypot-emoji">${item.emoji}</span>
-                            </div>
-                        `;
-                    } else if (this.motif === 'honeypot-hive') {
-                        target.innerHTML = `
-                            <div class="hive-cell-inner">
-                                <div class="hive-label zh-text">${item.zh}</div>
-                                <div class="hive-emoji">${item.emoji}</div>
-                            </div>
-                        `;
-                    }
-                    
-                    garden.appendChild(target);
-                });
-                
-                // Create draggables - shuffled
-                const shuffled = [...this.data.pairs].sort(() => Math.random() - 0.5);
-                shuffled.forEach((item, idx) => {
-                    const drag = document.createElement('div');
-                    drag.className = config.dragClass;
-                    drag.dataset.id = item.id;
-                    drag.dataset.word = item.en;
-                    drag.style.animationDelay = `${idx * 0.2}s`;
-                    
-                    if (this.motif === 'honeypot-hive') {
-                        drag.innerHTML = `
-                            <div class="honeypot-item-icon">${config.dragIcon}</div>
-                            <div class="honeypot-item-label">${item.en}</div>
-                        `;
-                    } else {
-                        drag.innerHTML = `
-                            <div class="bee-icon">${config.dragIcon}</div>
-                            <div class="bee-label">${item.en}</div>
-                        `;
-                    }
-                    
-                    // Event listeners
-                    drag.addEventListener('mousedown', (e) => this.startDrag(e));
-                    drag.addEventListener('touchstart', (e) => this.startDrag(e), { passive: false });
-                    
-                    sky.appendChild(drag);
-                });
-                
-                // Bind move/end handlers
-                this.handleMove = this.handleMove.bind(this);
-                this.handleEnd = this.handleEnd.bind(this);
-            }
-            
-            startDrag(e) {
-                e.preventDefault();
-                if (this.activeItem) return;
-                
-                const item = e.currentTarget;
-                this.activeItem = item;
-                
-                // Speak the word
-                app.audio.speakWord(item.dataset.word);
-                app.sfx.click();
-                
-                // Ghost the original
-                item.classList.add('ghost');
-                
-                // Create dragging clone
-                this.cloneItem = item.cloneNode(true);
-                this.cloneItem.classList.remove('ghost');
-                this.cloneItem.classList.add('dragging-clone');
-                this.cloneItem.style.animation = 'none';
-                
-                const rect = item.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                this.offsetX = clientX - rect.left;
-                this.offsetY = clientY - rect.top;
-                
-                this.cloneItem.style.left = rect.left + 'px';
-                this.cloneItem.style.top = rect.top + 'px';
-                this.cloneItem.style.width = rect.width + 'px';
-                
-                document.body.appendChild(this.cloneItem);
-                
-                // Add move/end listeners
-                document.addEventListener('mousemove', this.handleMove);
-                document.addEventListener('touchmove', this.handleMove, { passive: false });
-                document.addEventListener('mouseup', this.handleEnd);
-                document.addEventListener('touchend', this.handleEnd);
-            }
-            
-            handleMove(e) {
-                if (!this.cloneItem) return;
-                e.preventDefault();
-                
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                this.cloneItem.style.left = (clientX - this.offsetX) + 'px';
-                this.cloneItem.style.top = (clientY - this.offsetY) + 'px';
-                
-                // Check for hover over targets
-                this.cloneItem.style.display = 'none';
-                const elem = document.elementFromPoint(clientX, clientY);
-                this.cloneItem.style.display = 'flex';
-                
-                const config = this.getMotifConfig();
-                
-                // Clear all highlights
-                document.querySelectorAll(`.${config.targetClass}`).forEach(el => el.classList.remove('highlight'));
-                
-                // Highlight hovered target
-                if (elem) {
-                    const target = elem.closest(`.${config.targetClass}`);
-                    if (target && !target.classList.contains('matched')) {
-                        target.classList.add('highlight');
-                    }
-                }
-            }
-            
-            handleEnd(e) {
-                if (!this.cloneItem || !this.activeItem) return;
-                
-                const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-                const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-                
-                const config = this.getMotifConfig();
-                
-                // Find element under cursor
-                this.cloneItem.style.display = 'none';
-                const elem = document.elementFromPoint(clientX, clientY);
-                const target = elem ? elem.closest(`.${config.targetClass}`) : null;
-                
-                let success = false;
-                
-                if (target && !target.classList.contains('matched')) {
-                    const dragId = this.activeItem.dataset.id;
-                    const targetId = target.dataset.id;
-                    
-                    if (dragId === targetId) {
-                        // Correct match!
-                        success = true;
+                    if (target && target.dataset.id === el.dataset.id && !target.classList.contains('matched')) {
+                        app.sfx.correct(); app.audio.speak(el.dataset.word);
+                        target.classList.add('matched'); target.classList.remove('highlight');
                         
-                        // Mark as matched
-                        target.classList.add('matched');
-                        
-                        // Create landed bee/pot with full structure (clickable to pronounce)
-                        const landed = document.createElement('div');
-                        landed.className = config.landedClass;
-                        const word = this.activeItem.dataset.word;
-                        
-                        if (this.motif === 'honeypot-hive') {
-                            // For hive, just show pot emoji
-                            landed.textContent = config.dragIcon;
+                        // NEW LOGIC: If Hive game, replace content. Else append landed.
+                        const pair = this.data.pairs.find(p => p.id === target.dataset.id);
+                        if (this.data.motif === 'honeypot-hive') {
+                             target.innerHTML = `
+                                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%;">
+                                    <div style="font-size:2rem; line-height:1; margin-bottom:-4px;">🍯</div>
+                                    <div style="font-size:0.8rem; font-weight:900; color:#78350f;">${pair.en}</div>
+                                    <div style="width:40px; height:1px; background:rgba(120,53,15,0.3); margin:2px 0;"></div>
+                                    <div class="zh-text" style="font-size:0.9rem; font-weight:900; color:#78350f;">${pair.zh}</div>
+                                </div>`;
                         } else {
-                            // For bee-flower and bee-honeypot, show full bee with label
-                            landed.innerHTML = `
-                                <div class="bee-icon">🐝</div>
-                                <div class="bee-label">${word}</div>
-                            `;
+                             target.innerHTML += this.getConfig().landed({en:el.dataset.word});
                         }
-                        
-                        // Click to pronounce
-                        landed.dataset.word = word;
-                        landed.addEventListener('click', () => {
-                            app.audio.speakWord(word);
-                            app.sfx.click();
-                        });
-                        
-                        target.appendChild(landed);
-                        
-                        // Play success sound & speak word
-                        app.sfx.correct();
-                        setTimeout(() => app.audio.speakWord(word), 300);
-                        
-                        // Remove original draggable
-                        this.activeItem.remove();
-                        
-                        this.matchedCount++;
-                        
-                        // Check if complete
-                        if (this.matchedCount === this.data.pairs.length) {
-                            setTimeout(() => this.finishLevel(), 1000);
-                        }
+
+                        el.remove();
+                        this.matched++;
+                        if(this.matched === this.data.pairs.length) setTimeout(()=>this.finish(), 1000);
                     } else {
-                        // Wrong match
-                        this.mistakes++;
                         app.sfx.incorrect();
-                        target.classList.add('animate-shake');
-                        setTimeout(() => target.classList.remove('animate-shake'), 400);
+                        this.mistakes++;
+                        el.classList.remove('opacity-0');
+                        el.style.opacity = '1';
+                        if(target) target.classList.remove('highlight');
                     }
-                }
+                    clone.remove();
+                    document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', end);
+                    document.removeEventListener('touchmove', move); document.removeEventListener('touchend', end);
+                };
                 
-                // Cleanup
-                this.cloneItem.remove();
-                this.cloneItem = null;
-                
-                if (!success && this.activeItem) {
-                    this.activeItem.classList.remove('ghost');
-                }
-                
-                this.activeItem = null;
-                
-                // Clear highlights
-                document.querySelectorAll(`.${config.targetClass}`).forEach(el => el.classList.remove('highlight'));
-                
-                // Remove listeners
-                document.removeEventListener('mousemove', this.handleMove);
-                document.removeEventListener('touchmove', this.handleMove);
-                document.removeEventListener('mouseup', this.handleEnd);
-                document.removeEventListener('touchend', this.handleEnd);
+                clone.style.left = r.left + 'px';
+                clone.style.top = r.top + 'px';
+
+                document.addEventListener('mousemove', move); document.addEventListener('mouseup', end);
+                document.addEventListener('touchmove', move, {passive:false}); document.addEventListener('touchend', end);
             }
         }
-                
-        // Listening Fill Game
-        class ListeningFillGame extends GameBase {
-            constructor(container, gameData, gameId, bookId) {
-                super(container, gameData, gameId, bookId);
-                this.currentIndex = 0;
-                this.answers = [];
+
+        class ListenGame extends Game {
+            start() {
+                this.idx = 0;
+                Views.container.innerHTML = `
+                    ${this.header()}
+                    <div id="listen-area" class="listen-area"></div>
+                    <div class="game-footer">
+                        <div class="progress-dots"></div>
+                        <button id="next-btn" class="next-question-btn hidden">Next ➜</button>
+                    </div>`;
+                this.renderQ();
             }
-            
-            init() {
-                this.container.innerHTML = `
-                    ${this.renderHeader()}
-                    <div id="question-area" class="listen-area"></div>
-                `;
-                
-                this.loadQuestion();
-            }
-            
-            loadQuestion() {
-                const q = this.data.questions[this.currentIndex];
+            renderQ() {
+                const q = this.data.questions[this.idx];
                 const parts = q.text.split('____');
-                const questionArea = document.getElementById('question-area');
-                const isLastQuestion = this.currentIndex === this.data.questions.length - 1;
-                
-                // Shuffle options
-                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
-                
-                // Store reference for button onclick
-                window.currentListenGame = this;
-                
-                questionArea.innerHTML = `
-                    <button id="play-btn" class="play-sentence-btn">🔊</button>
-                    
-                    <div class="sentence-box animate-pop">
+                const area = document.getElementById('listen-area');
+                document.querySelector('.progress-dots').innerHTML = this.data.questions.map((_,i)=>`<div class="progress-dot ${i===this.idx?'current':(i<this.idx?'completed':'')}"></div>`).join('');
+                area.innerHTML = `
+                    <div class="sentence-box-compact">
+                        <button class="inline-speaker" onclick="app.audio.speak('${q.fullSentence}')">🔊</button>
                         <span>${parts[0]}</span>
                         <span id="blank" class="blank-spot">?</span>
-                        <span>${parts[1] || ''}</span>
+                        <span>${parts[1]||''}</span>
                     </div>
-                    
                     <div class="word-bank">
-                        ${shuffledOptions.map(opt => `
-                            <button class="word-option" data-word="${opt}">${opt}</button>
-                        `).join('')}
-                    </div>
-                    
-                    <button id="next-btn" class="next-question-btn hidden" onclick="window.currentListenGame.nextQuestion()">
-                        ${isLastQuestion ? '🏆 Finish!' : 'Next ➜'}
-                    </button>
-                    
-                    <div class="question-progress">
-                        ${this.data.questions.map((_, i) => `
-                            <div class="progress-dot ${i === this.currentIndex ? 'current' : ''} ${i < this.currentIndex ? 'completed' : ''}"></div>
-                        `).join('')}
+                        ${[...q.options].sort(()=>Math.random()-0.5).map(o => `<button class="word-option" onclick="game.check('${o}', this)">${o}</button>`).join('')}
                     </div>
                 `;
-                
-                // Play button
-                document.getElementById('play-btn').onclick = () => this.playSentence();
-                
-                // Word option buttons
-                document.querySelectorAll('.word-option').forEach(btn => {
-                    btn.onclick = () => this.selectAnswer(btn.dataset.word);
-                });
-                
-                // Auto-play sentence after a delay
-                setTimeout(() => this.playSentence(), 800);
+                setTimeout(() => app.audio.speak(q.fullSentence), 500);
+                const nextBtn = document.getElementById('next-btn');
+                nextBtn.classList.add('hidden');
+                nextBtn.onclick = () => {
+                    if(this.idx < this.data.questions.length-1) { this.idx++; this.renderQ(); }
+                    else this.finish();
+                };
             }
-            
-            playSentence() {
-                const q = this.data.questions[this.currentIndex];
-                app.audio.playSentence(this.gameId, this.currentIndex, q.fullSentence);
-            }
-            
-            selectAnswer(word) {
-                const q = this.data.questions[this.currentIndex];
-                const blank = document.getElementById('blank');
-                const buttons = document.querySelectorAll('.word-option');
-                
-                // Always speak the clicked word
-                app.audio.speakWord(word);
-                
-                // Show selected word in blank
-                blank.textContent = word;
-                blank.classList.add('filled');
-                
-                // Highlight selected button
-                buttons.forEach(btn => {
-                    btn.classList.remove('selected', 'correct', 'wrong');
-                    if (btn.dataset.word === word) {
-                        btn.classList.add('selected');
-                    }
-                });
-                
-                // Check answer
-                if (word.toLowerCase() === q.blank.toLowerCase()) {
-                    // Correct!
+            check(word, btn) {
+                const q = this.data.questions[this.idx];
+                app.audio.speak(word);
+                document.querySelectorAll('.word-option').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('blank').textContent = word;
+                document.getElementById('blank').classList.add('filled');
+                if(word === q.blank) {
                     app.sfx.correct();
-                    blank.classList.add('correct');
-                    
-                    buttons.forEach(btn => {
-                        if (btn.dataset.word === word) {
-                            btn.classList.add('correct');
-                        }
-                        btn.disabled = true;
-                    });
-                    
-                    this.answers[this.currentIndex] = word;
-                    
-                    // Show Next button
-                    document.getElementById('next-btn').classList.remove('hidden');
-                    
+                    btn.classList.add('correct');
+                    document.querySelectorAll('.word-option').forEach(b=>b.disabled=true);
+                    const nb = document.getElementById('next-btn');
+                    nb.textContent = this.idx === this.data.questions.length-1 ? 'Finish' : 'Next ➜';
+                    nb.classList.remove('hidden');
                 } else {
-                    // Wrong!
-                    this.mistakes++;
                     app.sfx.incorrect();
-                    
-                    buttons.forEach(btn => {
-                        if (btn.dataset.word === word) {
-                            btn.classList.add('wrong', 'animate-shake');
-                            setTimeout(() => btn.classList.remove('animate-shake'), 400);
-                        }
-                    });
-                    
-                    // Clear after short delay
-                    setTimeout(() => {
-                        blank.textContent = '?';
-                        blank.classList.remove('filled');
-                        buttons.forEach(btn => {
-                            btn.classList.remove('selected', 'wrong');
-                        });
-                    }, 800);
-                }
-            }
-            
-            nextQuestion() {
-                if (this.currentIndex < this.data.questions.length - 1) {
-                    this.currentIndex++;
-                    this.loadQuestion();
-                } else {
-                    this.finishLevel();
+                    this.mistakes++;
+                    btn.classList.add('wrong');
+                    setTimeout(() => { btn.classList.remove('wrong','selected'); document.getElementById('blank').textContent='?'; }, 500);
                 }
             }
         }
+        window.game = null;
+        const _origListen = ListenGame.prototype.start; ListenGame.prototype.start = function(){ window.game = this; _origListen.call(this); };
 
-        // Story Drawing Game
-        class StoryDrawGame extends GameBase {
-            constructor(container, gameData, gameId, bookId) {
-                super(container, gameData, gameId, bookId);
-                this.canvas = null;
-                this.ctx = null;
-                this.isDrawing = false;
-                this.currentColor = '#FF6B00'; // Orange default for pumpkin
-                this.brushSize = 8;
-                this.lastX = 0;
-                this.lastY = 0;
-                this.strokes = []; // For undo
-                this.currentStroke = [];
-                this.backgroundImage = null;
-            }
-            
-            getTypeId() {
-                return 'story';
-            }
-            
-            init() {
-                const colors = [
-                    { color: '#FF6B00', name: 'Orange' },
-                    { color: '#FFD700', name: 'Yellow' },
-                    { color: '#228B22', name: 'Green' },
-                    { color: '#8B4513', name: 'Brown' },
-                    { color: '#FF0000', name: 'Red' },
-                    { color: '#4169E1', name: 'Blue' },
-                    { color: '#800080', name: 'Purple' },
-                    { color: '#000000', name: 'Black' }
-                ];
-                
-                this.container.innerHTML = `
-                    ${this.renderHeader()}
+        class DrawGame extends Game {
+            start() {
+                // UPDATED: Added Undo/Clear/Save buttons
+                Views.container.innerHTML = `
+                    ${this.header()}
                     <div class="draw-container">
-                        <div class="draw-canvas-wrapper">
-                            <canvas id="draw-canvas" class="draw-canvas"></canvas>
-                        </div>
+                        <div class="draw-canvas-wrapper"><canvas id="cvs" class="draw-canvas"></canvas></div>
                         <div class="draw-toolbar">
-                            <button class="tool-btn active" data-tool="brush" title="Brush">🖌️</button>
-                            <button class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+                            <button class="tool-btn active" id="t-brush">🖌️</button>
+                            <button class="tool-btn" id="t-erase">🧽</button>
+                            <button class="tool-btn" id="t-undo">↩️</button>
+                            <div style="width:1px;height:24px;background:#ddd;margin:0 2px;"></div>
+                            <!-- UPDATED PALETTE -->
+                            <button class="color-btn" style="background:#FF6B00"></button>
+                            <button class="color-btn" style="background:#FFD700"></button>
+                            <button class="color-btn" style="background:#22C55E"></button>
+                            <button class="color-btn" style="background:#3B82F6"></button>
+                            <button class="color-btn" style="background:#A855F7"></button>
+                            <button class="color-btn" style="background:#EC4899"></button>
+                            <button class="color-btn" style="background:#000"></button>
+                            <button class="color-btn" style="background:#8B4513"></button>
+                            <button class="color-btn" style="background:#9CA3AF"></button>
                             
-                            <div class="brush-size">
-                                <div class="size-dot" data-size="4" style="width:10px;height:10px;"></div>
-                                <div class="size-dot active" data-size="8" style="width:16px;height:16px;"></div>
-                                <div class="size-dot" data-size="16" style="width:24px;height:24px;"></div>
-                            </div>
-                            
-                            ${colors.map(c => `
-                                <button class="color-btn ${c.color === '#FF6B00' ? 'active' : ''}" 
-                                        data-color="${c.color}" 
-                                        style="background:${c.color};" 
-                                        title="${c.name}"></button>
-                            `).join('')}
-                            
-                            <button class="tool-btn" data-tool="undo" title="Undo">↩️</button>
-                            <button class="tool-btn" data-tool="clear" title="Clear All">🗑️</button>
-                            <button class="save-btn" data-tool="save">💾 Save</button>
-                            <button class="done-btn" data-tool="done">✓ Done</button>
+                            <div style="width:1px;height:24px;background:#ddd;margin:0 2px;"></div>
+                            <button class="tool-btn" id="t-clear">🗑️</button>
+                            <button class="tool-btn" id="t-save">💾</button>
+                            <button class="done-btn" onclick="game.finish()">✓ Done</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
+                window.game = this;
                 
-                this.setupCanvas();
-                this.setupToolbar();
-                this.loadBackgroundImage();
-            }
-            
-            setupCanvas() {
-                this.canvas = document.getElementById('draw-canvas');
-                this.ctx = this.canvas.getContext('2d');
+                const cvs = document.getElementById('cvs');
+                const ctx = cvs.getContext('2d');
+                let history = []; 
                 
-                // Set canvas size based on container
-                this.resizeCanvas();
-                window.addEventListener('resize', () => this.resizeCanvas());
-                
-                // Drawing events
-                this.canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
-                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
-                this.canvas.addEventListener('mouseup', () => this.stopDrawing());
-                this.canvas.addEventListener('mouseleave', () => this.stopDrawing());
-                
-                // Touch events
-                this.canvas.addEventListener('touchstart', (e) => this.startDrawing(e), { passive: false });
-                this.canvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
-                this.canvas.addEventListener('touchend', () => this.stopDrawing());
-                this.canvas.addEventListener('touchcancel', () => this.stopDrawing());
-            }
-            
-            resizeCanvas() {
-                const wrapper = this.canvas.parentElement;
-                const maxWidth = wrapper.clientWidth - 20;
-                const maxHeight = wrapper.clientHeight - 20;
-                
-                // Maintain 4:3 aspect ratio
-                const aspectRatio = 4 / 3;
-                let width = maxWidth;
-                let height = width / aspectRatio;
-                
-                if (height > maxHeight) {
-                    height = maxHeight;
-                    width = height * aspectRatio;
-                }
-                
-                // Store old image data
-                const oldData = this.ctx ? this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height) : null;
-                
-                this.canvas.width = width;
-                this.canvas.height = height;
-                
-                // Redraw background and strokes
-                this.redrawCanvas();
-            }
-            
-            loadBackgroundImage() {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => {
-                    this.backgroundImage = img;
-                    this.redrawCanvas();
+                const saveState = () => {
+                    history.push(ctx.getImageData(0,0,cvs.width,cvs.height));
+                    if(history.length>10) history.shift();
                 };
-                img.onerror = () => {
-                    // If image fails to load, just use white background
-                    console.log('Background image not found, using white background');
-                    this.redrawCanvas();
+
+                const resize = () => {
+                    const r = cvs.parentElement.getBoundingClientRect();
+                    cvs.width = (r.width-20) * 2; cvs.height = (r.height-20) * 2;
+                    cvs.style.width = (r.width-20)+'px'; cvs.style.height = (r.height-20)+'px';
+                    ctx.scale(2,2); ctx.lineCap='round'; ctx.lineJoin='round';
+                    const img = new Image(); img.src = this.data.backgroundImage;
+                    img.onload = () => {
+                         const s = Math.min((r.width-20)/img.width, (r.height-20)/img.height) * 0.9;
+                         ctx.drawImage(img, (r.width-20 - img.width*s)/2, (r.height-20 - img.height*s)/2, img.width*s, img.height*s);
+                         saveState();
+                    };
                 };
-                img.src = this.data.backgroundImage;
-            }
-            
-            redrawCanvas() {
-                // Clear canvas with white background
-                this.ctx.fillStyle = 'white';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                setTimeout(resize, 10);
                 
-                // Draw background image if available (centered and scaled to fit)
-                if (this.backgroundImage) {
-                    const img = this.backgroundImage;
-                    const canvasW = this.canvas.width;
-                    const canvasH = this.canvas.height;
-                    const imgW = img.naturalWidth || img.width;
-                    const imgH = img.naturalHeight || img.height;
-                    
-                    // Calculate scale to fit (contain)
-                    const scale = Math.min(canvasW / imgW, canvasH / imgH) * 0.95; // 95% to add padding
-                    
-                    const drawW = imgW * scale;
-                    const drawH = imgH * scale;
-                    
-                    // Center the image
-                    const offsetX = (canvasW - drawW) / 2;
-                    const offsetY = (canvasH - drawH) / 2;
-                    
-                    this.ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
-                }
+                let drawing = false, color = '#FF6B00', size = 5, mode = 'brush';
                 
-                // Redraw all strokes
-                this.strokes.forEach(stroke => this.drawStroke(stroke));
-            }
-            
-            drawStroke(stroke) {
-                if (stroke.points.length < 2) return;
-                
-                this.ctx.strokeStyle = stroke.color;
-                this.ctx.lineWidth = stroke.size;
-                this.ctx.lineCap = 'round';
-                this.ctx.lineJoin = 'round';
-                
-                if (stroke.isEraser) {
-                    this.ctx.globalCompositeOperation = 'destination-out';
-                } else {
-                    this.ctx.globalCompositeOperation = 'source-over';
-                }
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
-                
-                for (let i = 1; i < stroke.points.length; i++) {
-                    this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
-                }
-                
-                this.ctx.stroke();
-                this.ctx.globalCompositeOperation = 'source-over';
-            }
-            
-            getCoordinates(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                const scaleX = this.canvas.width / rect.width;
-                const scaleY = this.canvas.height / rect.height;
-                
-                let clientX, clientY;
-                if (e.touches && e.touches.length > 0) {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-                
-                return {
-                    x: (clientX - rect.left) * scaleX,
-                    y: (clientY - rect.top) * scaleY
+                const getPos = (e) => {
+                    const r = cvs.getBoundingClientRect();
+                    const t = e.touches ? e.touches[0] : e;
+                    return { x: t.clientX - r.left, y: t.clientY - r.top };
                 };
-            }
-            
-            startDrawing(e) {
-                e.preventDefault();
-                this.isDrawing = true;
                 
-                const coords = this.getCoordinates(e);
-                this.lastX = coords.x;
-                this.lastY = coords.y;
-                
-                this.currentStroke = {
-                    color: this.currentColor,
-                    size: this.brushSize,
-                    isEraser: this.currentTool === 'eraser',
-                    points: [{ x: coords.x, y: coords.y }]
+                const start = (e) => { 
+                    e.preventDefault(); drawing=true; 
+                    saveState(); 
+                    ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x, p.y); 
                 };
-            }
-            
-            draw(e) {
-                if (!this.isDrawing) return;
-                e.preventDefault();
+                const move = (e) => {
+                    if(!drawing) return; e.preventDefault();
+                    const p = getPos(e);
+                    ctx.globalCompositeOperation = mode==='erase'?'destination-out':'source-over';
+                    ctx.strokeStyle = mode==='erase'?'rgba(0,0,0,1)':color;
+                    ctx.lineWidth = mode==='erase'?20:size;
+                    ctx.lineTo(p.x, p.y); ctx.stroke();
+                };
+                const end = () => drawing=false;
                 
-                const coords = this.getCoordinates(e);
+                cvs.onmousedown = cvs.ontouchstart = start;
+                cvs.onmousemove = cvs.ontouchmove = move;
+                cvs.onmouseup = cvs.onmouseleave = cvs.ontouchend = end;
                 
-                // Add point to current stroke
-                this.currentStroke.points.push({ x: coords.x, y: coords.y });
+                const setActive = (id) => { document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById(id).classList.add('active'); };
                 
-                // Draw line segment
-                this.ctx.strokeStyle = this.currentStroke.isEraser ? 'white' : this.currentColor;
-                this.ctx.lineWidth = this.brushSize;
-                this.ctx.lineCap = 'round';
-                this.ctx.lineJoin = 'round';
+                document.getElementById('t-brush').onclick=function(){mode='brush'; setActive('t-brush');};
+                document.getElementById('t-erase').onclick=function(){mode='erase'; setActive('t-erase');};
                 
-                if (this.currentStroke.isEraser) {
-                    this.ctx.globalCompositeOperation = 'destination-out';
-                }
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(this.lastX, this.lastY);
-                this.ctx.lineTo(coords.x, coords.y);
-                this.ctx.stroke();
-                
-                this.ctx.globalCompositeOperation = 'source-over';
-                
-                this.lastX = coords.x;
-                this.lastY = coords.y;
-            }
-            
-            stopDrawing() {
-                if (this.isDrawing && this.currentStroke.points.length > 0) {
-                    this.strokes.push(this.currentStroke);
-                }
-                this.isDrawing = false;
-                this.currentStroke = { points: [] };
-            }
-            
-            setupToolbar() {
-                this.currentTool = 'brush';
-                
-                document.querySelectorAll('.tool-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const tool = btn.dataset.tool;
-                        
-                        if (tool === 'brush' || tool === 'eraser') {
-                            document.querySelectorAll('.tool-btn[data-tool="brush"], .tool-btn[data-tool="eraser"]')
-                                .forEach(b => b.classList.remove('active'));
-                            btn.classList.add('active');
-                            this.currentTool = tool;
-                        } else if (tool === 'undo') {
-                            this.undo();
-                        } else if (tool === 'clear') {
-                            this.clearCanvas();
-                        } else if (tool === 'save') {
-                            this.saveImage();
-                        } else if (tool === 'done') {
-                            this.completeActivity();
-                        }
-                        
-                        app.sfx.click();
-                    });
-                });
-                
-                document.querySelectorAll('.color-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentColor = btn.dataset.color;
-                        
-                        // Switch to brush if on eraser
-                        if (this.currentTool === 'eraser') {
-                            document.querySelector('.tool-btn[data-tool="eraser"]').classList.remove('active');
-                            document.querySelector('.tool-btn[data-tool="brush"]').classList.add('active');
-                            this.currentTool = 'brush';
-                        }
-                        
-                        app.sfx.click();
-                    });
-                });
-                
-                document.querySelectorAll('.size-dot').forEach(dot => {
-                    dot.addEventListener('click', () => {
-                        document.querySelectorAll('.size-dot').forEach(d => d.classList.remove('active'));
-                        dot.classList.add('active');
-                        this.brushSize = parseInt(dot.dataset.size);
-                        app.sfx.click();
-                    });
-                });
-            }
-            
-            undo() {
-                if (this.strokes.length > 0) {
-                    this.strokes.pop();
-                    this.redrawCanvas();
-                }
-            }
-            
-            clearCanvas() {
-                if (confirm('Clear all your drawing?')) {
-                    this.strokes = [];
-                    this.redrawCanvas();
-                }
-            }
-            
-            saveImage() {
-                // Create a temporary canvas with background + drawing
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = this.canvas.width;
-                tempCanvas.height = this.canvas.height;
-                const tempCtx = tempCanvas.getContext('2d');
-                
-                // Draw white background
-                tempCtx.fillStyle = 'white';
-                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-                
-                // Draw background image
-                if (this.backgroundImage) {
-                    tempCtx.drawImage(this.backgroundImage, 0, 0, tempCanvas.width, tempCanvas.height);
-                }
-                
-                // Draw all strokes
-                this.strokes.forEach(stroke => {
-                    if (stroke.points.length < 2) return;
-                    
-                    tempCtx.strokeStyle = stroke.isEraser ? 'white' : stroke.color;
-                    tempCtx.lineWidth = stroke.size;
-                    tempCtx.lineCap = 'round';
-                    tempCtx.lineJoin = 'round';
-                    
-                    tempCtx.beginPath();
-                    tempCtx.moveTo(stroke.points[0].x, stroke.points[0].y);
-                    for (let i = 1; i < stroke.points.length; i++) {
-                        tempCtx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                document.getElementById('t-undo').onclick=function(){
+                    if(history.length>0) {
+                        ctx.putImageData(history.pop(),0,0);
                     }
-                    tempCtx.stroke();
-                });
-                
-                // Download
-                const link = document.createElement('a');
-                link.download = `${this.data.title.replace(/\s+/g, '-')}-${Date.now()}.png`;
-                link.href = tempCanvas.toDataURL('image/png');
-                link.click();
-                
-                app.sfx.correct();
-            }
-            
-            completeActivity() {
-                app.store.completeGame(this.gameId, 0, 0); // No stars for story activities
-                
-                // Show completion modal
-                document.getElementById('fb-stars').textContent = '✓';
-                document.getElementById('fb-icon').textContent = '🎨';
-                document.getElementById('fb-title').textContent = 'Great Art!';
-                document.getElementById('fb-message').textContent = 'Activity completed!';
-                
-                document.getElementById('fb-continue-btn').onclick = () => {
-                    document.getElementById('modal-feedback').classList.add('hidden');
-                    window.location.hash = `#/types/${this.bookId}/story`;
                 };
                 
-                document.getElementById('modal-feedback').classList.remove('hidden');
-                app.sfx.complete();
+                document.getElementById('t-clear').onclick=function(){
+                    if(confirm('Clear all?')) {
+                        ctx.fillStyle='white'; ctx.fillRect(0,0,cvs.width/2, cvs.height/2); 
+                        resize(); 
+                    }
+                };
+                
+                document.getElementById('t-save').onclick=function(){
+                    const link = document.createElement('a');
+                    link.download = 'my-drawing.png';
+                    link.href = cvs.toDataURL();
+                    link.click();
+                };
+
+                document.querySelectorAll('.color-btn').forEach(b => b.onclick=function(){
+                    color = this.style.background;
+                    mode='brush'; setActive('t-brush');
+                });
             }
         }
 
-        // ============================================
-        // 6. APP INITIALIZATION
-        // ============================================
-        const app = {
-            store: new Store(),
-            audio: new AudioManager(),
-            sfx: new SoundFX(),
-            orientation: new OrientationManager(),
-            router: null,
-            
-            init() {
-                // Set up modal handlers
-                document.getElementById('start-btn').onclick = () => this.startApp();
-                document.getElementById('confirm-reset-btn').onclick = () => this.confirmReset();
-                document.getElementById('cancel-reset-btn').onclick = () => this.hideResetModal();
-                
-                // Initialize orientation detection
-                this.orientation.init();
-                
-                // Initialize router
-                this.router = new Router(Views);
-            },
-            
-            startApp() {
-                const modal = document.getElementById('audio-modal');
-                modal.style.opacity = '0';
-                modal.style.pointerEvents = 'none';
-                setTimeout(() => modal.style.display = 'none', 500);
-                
-                // Initialize audio systems
-                this.audio.init();
-                this.sfx.init();
-                
-                // Navigate to home
-                if (!window.location.hash || window.location.hash === '#') {
-                    window.location.hash = '#/home';
-                } else {
-                    this.router.handleRoute();
-                }
-            },
-            
-            showResetModal() {
-                document.getElementById('modal-reset').classList.remove('hidden');
-            },
-            
-            hideResetModal() {
-                document.getElementById('modal-reset').classList.add('hidden');
-            },
-            
-            confirmReset() {
-                this.store.reset();
-                this.hideResetModal();
-                window.location.hash = '#/home';
-                this.router.handleRoute();
-            },
-            
-            dismissTutorial() {
-                document.getElementById('tutorial-overlay').classList.add('hidden');
-                app.store.markTutorialShown();
-            }
-        };
-
-        // Start app when DOM is ready
         document.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
