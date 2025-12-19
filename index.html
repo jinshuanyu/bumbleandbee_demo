@@ -53,6 +53,40 @@
         .nav-main-title { font-size: 1.2rem; font-weight: bold; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .back-btn, .settings-btn { background: var(--white); border: 2px solid var(--bee-black); border-radius: 50%; width: 42px; height: 42px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+
+        /* Game page: floating back button (no header) */
+        .floating-back {
+            position: fixed;
+            top: calc(10px + env(safe-area-inset-top));
+            left: calc(10px + env(safe-area-inset-left));
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.92);
+            border: 2px solid var(--bee-black);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            z-index: 3000;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .floating-back:active { transform: scale(0.96); }
+
+        /* Game page: allow main area to scroll when needed (esp. mobile) */
+        .game-viewport {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
         .back-btn { margin-right: 10px; } .settings-btn { margin-left: 10px; }
 
         .hidden { display: none !important; }
@@ -66,8 +100,8 @@
         @keyframes rotate-phone { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } }
         
         /* Game Areas */
-        #sky-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; align-content: center; flex-wrap: wrap; padding: 10px; position: relative; background: linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%); }
-        #garden-area { width: 100%; display: flex; justify-content: center; align-items: flex-end; flex-wrap: wrap; padding-bottom: 20px; gap: 10px; background: #b3ffb3; min-height: 130px; }
+        #sky-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; align-content: center; flex-wrap: nowrap; padding: 10px; position: relative; background: linear-gradient(180deg, #bfeaff 0%, #e6ffe6 60%, #b3ffb3 100%); }
+        #garden-area { width: 100%; display: flex; justify-content: center; align-items: flex-end; flex-wrap: nowrap; padding-bottom: 20px; gap: 10px; background: #b3ffb3; min-height: 130px; }
         
         .bee-item, .honeypot-item { width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px; cursor: grab; z-index: 100; position: relative; animation: float 3s ease-in-out infinite; touch-action: none; }
         .bee-icon, .honeypot-item-icon { font-size: 3rem; line-height: 1; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2)); }
@@ -86,9 +120,9 @@
         .flower-emoji, .honeypot-emoji { font-size: 1.5rem; margin-top: 2px; }
         
         /* Highlight State */
-        .highlight { transform: scale(1.15) !important; filter: drop-shadow(0 0 8px gold); z-index: 10; }
+        .highlight { filter: drop-shadow(0 0 8px gold); z-index: 10; }
         
-        .dragging-clone { position: fixed; z-index: 99999; pointer-events: none; transform: scale(1.2) rotate(-10deg); opacity: 0.9; }
+        .dragging-clone { position: fixed; z-index: 99999; pointer-events: none; opacity: 0.9; }
         .opacity-0 { opacity: 0 !important; visibility: hidden !important; }
 
         /* Landed Items */
@@ -109,9 +143,9 @@
 
         /* Listen Game */
         .listen-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 15px; background: linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 100%); overflow-y: auto; padding-bottom: 90px; }
-        .sentence-box-compact { font-size: 1.3rem; background: white; padding: 15px; border-radius: 16px; border: 3px solid var(--bee-black); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; width: 100%; line-height: 1.5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: center; }
+        .sentence-box-compact { font-size: 1.3rem; background: white; padding: 15px; border-radius: 16px; border: 3px solid var(--bee-black); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; width: 100%; line-height: 1.5; display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; justify-content: center; }
         .inline-speaker { background: #E3F2FD; border: 2px solid #42A5F5; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; margin-right: 8px; flex-shrink: 0; }
-        .word-bank { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 500px; width: 100%; }
+        .word-bank { display: flex; flex-wrap: nowrap; justify-content: center; gap: 10px; max-width: 500px; width: 100%; }
         .word-option { min-width: 70px; padding: 8px 12px; background: var(--honey-yellow); border: 2px solid var(--bee-black); border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; touch-action: manipulation; }
         .word-option:active { transform: scale(0.95); }
         .word-option.selected { background: #FFA500; transform: scale(1.05); }
@@ -179,7 +213,122 @@
         .color-btn.active { transform: scale(1.15); border-color: #333; }
         .done-btn { background: #FCD34D; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 1rem; width: 100%; margin-top: auto; }
 
-        /* Themes Grid */
+        
+        /* B Cart Drag Game */
+        .cart-game{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  height:100%;
+  padding-top:72px; /* keep clear of floating back button */
+  align-items:center;
+}
+.cart-topbar{ display:none !important; }
+
+.cart-shelf{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:28px;
+  padding:12px 18px 0;
+  flex:0 0 auto;
+}
+.cart-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
+  transform:none !important;
+}
+.cart-item:active{ transform:none !important; }
+.cart-item .emoji{
+  font-size:76px;
+  line-height:1;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12));
+}
+
+.cart-zone{
+  width:100%;
+  flex:1 1 auto;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  padding:0 18px 34px;
+}
+.cart-emoji{
+  position: relative;
+  z-index: 1;
+  font-size:190px;
+  line-height:1;
+  user-select:none;
+  -webkit-user-select:none;
+  transform:none !important;
+  margin-top:10px;
+  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.12));
+}
+
+.cart-words{
+  margin-top:8px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  min-height:28px;
+  font-weight:800;
+  letter-spacing:0.2px;
+  color:#233;
+  opacity:0.85;
+}
+.cart-chip{
+  background:rgba(255,255,255,0.65);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:18px;
+  line-height:1;
+}
+
+.cart-pile{
+  position:absolute;
+  left:0; top:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  z-index: 2;
+}
+
+.cart-incart{
+  position:absolute;
+  font-size:58px;
+  line-height:1;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.18));
+}
+
+.cart-shake{ animation: cartShake 0.28s ease-in-out 0s 1; }
+@keyframes cartShake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-6px); }
+  50%{ transform: translateX(6px); }
+  75%{ transform: translateX(-4px); }
+  100%{ transform: translateX(0); }
+}
+
+.dragging-clone{
+  position:fixed;
+  z-index:9999;
+  pointer-events:none;
+  font-size:76px;
+  line-height:1;
+  transform: translate(-50%,-50%);
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25));
+}
+/* Themes Grid */
         .themes-row-4{ display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 800px; margin: 0 auto; padding: 10px; }
         .theme-tile{ aspect-ratio: 1 / 1; padding: 6px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; background: white; border: 2px solid var(--bee-black); border-radius: 12px; cursor: pointer; }
         .theme-tile .emoji{ font-size: 2.5rem; line-height: 1; }
@@ -243,7 +392,7 @@
         const MANIFEST = {
             books: [
                 { id: "1", title: "Let's BEE Thankful", cover: "🎃🥧", subtitle: "Fall & Thanksgiving", class: "book1" },
-                { id: "2", title: "Let's Play Make BEE-lieve", cover: "🎭🗺️", subtitle: "Imagination & Play", class: "book2" },
+                { id: "2", title: "Let's Play Make BEE-lieve", cover: "🎭🏴‍☠️", subtitle: "Imagination & Play", class: "book2" },
                 { id: "3", title: "Don't Worry, BEE Happy", cover: "📸😊", subtitle: "Friendship & Feelings", class: "book3" }
             ]
         };
@@ -253,7 +402,7 @@
                 games: {
                     "vocab": { sets: [{ id: "B1-V01", title: "Fall Fun", icon: "🍂" }, { id: "B1-V02", title: "Baking", icon: "🥧" }, { id: "B1-V03", title: "Winter", icon: "❄️" }]},
                     "listen": { sets: [{ id: "B1-L01", title: "Fall Sentences", icon: "🍁" }, { id: "B1-L02", title: "Baking Sentences", icon: "🧁" }, { id: "B1-L03", title: "Winter Sentences", icon: "❄️" }]},
-                    "story": { sets: [{ id: "B1-S01", title: "Paint the Pumpkin", icon: "🎃" }]}
+                    "story": { sets: [{ id: "B1-S01", title: "B Cart 🛒", icon: "🛒" }]}
                 },
                 gameData: {
                     "B1-V01": { type: "vocab_match", motif: "bee-flower", title: "Fall Fun Words", pairs: [
@@ -292,7 +441,29 @@
                         { text: "There is not enough ____ !", blank: "room", fullSentence: "There is not enough room!", options: ["room", "Winter", "practice", "friends"] },
                         { text: "I guess there is always room for marshmallows and ____ .", blank: "friends", fullSentence: "I guess there is always room for marshmallows and friends.", options: ["friends", "favorite", "room", "practice"] }
                     ]},
-                    "B1-S01": { type: "story_draw", title: "Paint the Pumpkin", backgroundImage: "B1A1Pumpkin.svg" }
+                    "B1-S01": { 
+                        type: "b_cart_drag", 
+                        title: "B Cart 🛒", 
+                        instruction: "Drag the items that start with B into the cart. Tap any picture to hear the word.",
+                        bPool: [
+                            { word: "banana", emoji: "🍌" },
+                            { word: "balloon", emoji: "🎈" },
+                            { word: "basketball", emoji: "🏀" },
+                            { word: "bicycle", emoji: "🚲" },
+                            { word: "boot", emoji: "🥾" },
+                            { word: "bucket", emoji: "🪣" }
+                        ],
+                        nonPool: [
+                            { word: "apple", emoji: "🍎" },
+                            { word: "carrot", emoji: "🥕" },
+                            { word: "fish", emoji: "🐟" },
+                            { word: "donut", emoji: "🍩" },
+                            { word: "pizza", emoji: "🍕" },
+                            { word: "turtle", emoji: "🐢" },
+                            { word: "ice cream", emoji: "🍦" },
+                            { word: "cat", emoji: "🐱" }
+                        ]
+                    }
                 }
             },
             "2": { games: {}, gameData: {} }, "3": { games: {}, gameData: {} }
@@ -538,7 +709,7 @@
                 const gData = BOOK_DATA[bid].gameData[gid];
                 if(gData.type === 'vocab_match') new VocabGame(bid, gid, tid, gData).start();
                 if(gData.type === 'listening_fill') new ListenGame(bid, gid, tid, gData).start();
-                if(gData.type === 'story_draw') new DrawGame(bid, gid, tid, gData).start();
+                if(gData.type === 'b_cart_drag') new CartBGame(bid, gid, tid, gData).start();
             },
             
             storyList(bid) {
@@ -570,11 +741,8 @@
             header() {
                 const backFn = this.tid === 'story' ? `Views.storyList('${this.bid}')` : `Views.themeSelect('${this.bid}','${this.tid}')`;
                 return `
-                <div class="nav-header">
-                    <button class="back-btn" onclick="${backFn}">←</button>
-                    <div class="nav-title-block"><div class="nav-main-title">${this.data.title}</div></div>
-                    <div style="width:40px"></div>
-                </div>`;
+                    <button class="floating-back" onclick="${backFn}" aria-label="Back">←</button>
+                `;
             }
             finish() {
                 let stars = 3; if(this.mistakes > 0) stars=2; if(this.mistakes > 2) stars=1;
@@ -599,7 +767,7 @@
                 const config = this.getConfig();
                 Views.container.innerHTML = `
                     ${this.header()}
-                    <div style="flex:1; display:flex; flex-direction:column; width:100%; overflow:hidden;">
+                    <div class="game-viewport">
                         <div id="sky-area" style="background:${config.sky}">${[1,2,3,4].map(i=>`<div class="cloud cloud-${i}">☁️</div>`).join('')}</div>
                         <div id="garden-area" class="${config.gardenClass}" style="background:${config.garden}"></div>
                     </div>`;
@@ -799,6 +967,268 @@
         }
         window.game = null;
         const _origListen = ListenGame.prototype.start; ListenGame.prototype.start = function(){ window.game = this; _origListen.call(this); };
+class CartBGame extends Game {
+    constructor() {
+        super('b_cart_drag');
+
+        // Pool of 6 B-words (emoji only on screen)
+        this.bPool = [
+            { word: "banana", emoji: "🍌" },
+            { word: "balloon", emoji: "🎈" },
+            { word: "basketball", emoji: "🏀" },
+            { word: "bicycle", emoji: "🚲" },
+            { word: "boot", emoji: "👢" },
+            { word: "bucket", emoji: "🪣" },
+        ];
+
+        // Non-B pool (random; one per level)
+        this.nonBPool = [
+            { word: "apple", emoji: "🍎" },
+            { word: "fish", emoji: "🐟" },
+            { word: "turtle", emoji: "🐢" },
+            { word: "carrot", emoji: "🥕" },
+            { word: "donut", emoji: "🍩" },
+            { word: "ice cream", emoji: "🍦" },
+        ];
+
+        this.level = 0;
+        this.bLevels = [];
+        this.nonLevels = [];
+        this.collected = [];
+        this._active = null; // { el, clone, startX, startY }
+    }
+
+    start() {
+        // Shuffle B words, split into 3 levels of 2 each
+        const b = this.shuffle([...this.bPool]);
+        this.bLevels = [b.slice(0, 2), b.slice(2, 4), b.slice(4, 6)];
+
+        // Shuffle Non-B, take 3 (one per level)
+        const nb = this.shuffle([...this.nonBPool]);
+        this.nonLevels = [nb[0], nb[1], nb[2]];
+
+        this.level = 0;
+        this.renderLevel();
+    }
+
+    renderLevel() {
+        this.collected = [];
+
+        Views.container.innerHTML = `
+            ${this.header()}
+            <div class="game-viewport cart-game" role="application" aria-label="Drag B words into cart">
+                <div class="cart-shelf" id="itemRow"></div>
+
+                <div class="cart-zone" id="cartZone" aria-label="cart drop zone">
+                    <div class="cart-pile" id="cartPile" aria-hidden="true"></div>
+                    <div class="cart-emoji" id="cartEmoji" aria-label="shopping cart">🛒</div>
+                    <div class="cart-words" id="cartWords" aria-label="collected words"></div>
+                </div>
+            </div>
+        `;
+
+        const shelf = document.getElementById('itemRow');
+        const cartZone = document.getElementById('cartZone');
+        const cartEmoji = document.getElementById('cartEmoji');
+
+        // Items: 2 B + 1 non-B, positions shuffled
+        const items = this.shuffle([
+            ...this.bLevels[this.level].map(it => ({ ...it, isB: true })),
+            { ...this.nonLevels[this.level], isB: false }
+        ]);
+
+        items.forEach((it) => {
+            const el = document.createElement('div');
+            el.className = 'cart-item';
+            el.dataset.word = it.word;
+            el.dataset.emoji = it.emoji;
+            el.dataset.isb = it.isB ? '1' : '0';
+            el.innerHTML = `<div class="emoji">${it.emoji}</div>`;
+
+            // Tap to speak (no speaker icon)
+            el.addEventListener('click', (e) => {
+                // If we are dragging, ignore click
+                if (el.dataset.dragging === '1') return;
+                app.audio.speakWord(it.word);
+            }, { passive: true });
+
+            // Drag (pointer/touch/mouse)
+            el.addEventListener('pointerdown', (e) => this.beginDrag(e, el), { passive: false });
+
+            shelf.appendChild(el);
+        });
+
+        // Tap cart to speak the instruction cue (optional, but no UI)
+        cartEmoji.addEventListener('click', () => {
+            app.audio.speakWord("cart");
+        }, { passive: true });
+
+        // Ensure any lingering active drag is cleared on rerender
+        this.cleanupDrag();
+
+        // Keep references for hit-testing
+        this._cartZone = cartZone;
+        this._cartEmoji = cartEmoji;
+    }
+
+    beginDrag(e, el) {
+        // Prevent page scrolling while dragging
+        e.preventDefault();
+
+        // Mark dragging to suppress click speak
+        el.dataset.dragging = '1';
+
+        // Create clone
+        const clone = document.createElement('div');
+        clone.className = 'dragging-clone';
+        clone.textContent = el.dataset.emoji || '🧩';
+        document.body.appendChild(clone);
+
+        const move = (ev) => {
+            clone.style.left = `${ev.clientX}px`;
+            clone.style.top = `${ev.clientY}px`;
+        };
+
+        const up = (ev) => {
+            window.removeEventListener('pointermove', move, { passive: false });
+            window.removeEventListener('pointerup', up, { passive: false });
+
+            this._cartEmoji?.classList.remove('cart-shake');
+
+            const droppedOnCart = this.isOverCart(ev.clientX, ev.clientY);
+
+            const isB = el.dataset.isb === '1';
+            const word = el.dataset.word;
+
+            // Cleanup clone
+            if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
+
+            el.dataset.dragging = '0';
+
+            if (droppedOnCart && isB) {
+                // Correct
+                app.sfx.playCorrect?.();
+                app.audio.speakWord(word);
+
+                // Remove from shelf
+                el.remove();
+
+                // Place emoji onto cart
+                this.placeOnCart(el.dataset.emoji);
+
+                // Track collected
+                this.collected.push({ word, emoji: el.dataset.emoji });
+
+                this.updateCartWords();
+
+                if (this.collected.length >= 2) {
+                    setTimeout(() => this.nextLevel(), 550);
+                }
+            } else if (droppedOnCart && !isB) {
+                // Wrong (non-B into cart)
+                app.sfx.playWrong?.();
+                app.audio.speakWord("Try again");
+                this.shakeOnce(this._cartEmoji);
+            } else {
+                // Dropped elsewhere: do nothing (item stays)
+            }
+        };
+
+        // Initial position
+        clone.style.left = `${e.clientX}px`;
+        clone.style.top = `${e.clientY}px`;
+
+        window.addEventListener('pointermove', move, { passive: false });
+        window.addEventListener('pointerup', up, { passive: false });
+    }
+
+    isOverCart(x, y) {
+        const zone = this._cartZone;
+        if (!zone) return false;
+        const r = zone.getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    }
+
+    placeOnCart(emoji) {
+        const pile = document.getElementById('cartPile');
+        const cartEmoji = document.getElementById('cartEmoji');
+        const zone = document.getElementById('cartZone');
+        if (!pile || !cartEmoji || !zone) return;
+
+        const zoneRect = zone.getBoundingClientRect();
+        const cartRect = cartEmoji.getBoundingClientRect();
+
+        // Coordinates relative to cartZone
+        const cartX = cartRect.left - zoneRect.left;
+        const cartY = cartRect.top - zoneRect.top;
+
+        // Place within the "basket" area (upper-middle of cart)
+        const x = cartX + cartRect.width * (0.22 + Math.random() * 0.56);
+        const y = cartY + cartRect.height * (0.16 + Math.random() * 0.18);
+
+        const el = document.createElement('div');
+        el.className = 'cart-incart';
+        el.textContent = emoji || '🧩';
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+
+        pile.appendChild(el);
+    }
+
+    updateCartWords() {
+        const box = document.getElementById('cartWords');
+        if (!box) return;
+        box.innerHTML = this.collected
+            .map(it => `<span class="cart-chip">${it.word}</span>`)
+            .join('');
+    }
+
+    nextLevel() {
+        // Clear cart pile between levels
+        const pile = document.getElementById('cartPile');
+        if (pile) pile.innerHTML = '';
+
+        if (this.level < 2) {
+            this.level += 1;
+            this.renderLevel();
+        } else {
+            // End screen (simple)
+            Views.container.innerHTML = `
+                ${this.header()}
+                <div class="game-viewport cart-game" style="justify-content:center;text-align:center;">
+                    <div style="font-size:96px;line-height:1;">🎉</div>
+                    <div style="font-weight:800;font-size:26px;opacity:.9;margin-top:10px;">Done!</div>
+                    <button class="primary-btn" style="margin-top:18px;" id="playAgainBtn">Play again</button>
+                </div>
+            `;
+            document.getElementById('playAgainBtn')?.addEventListener('click', () => this.start());
+        }
+    }
+
+    shakeOnce(el) {
+        if (!el) return;
+        el.classList.remove('cart-shake');
+        // reflow
+        void el.offsetWidth;
+        el.classList.add('cart-shake');
+        setTimeout(() => el.classList.remove('cart-shake'), 320);
+    }
+
+    shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    cleanupDrag() {
+        const clones = document.querySelectorAll('.dragging-clone');
+        clones.forEach(c => c.remove());
+    }
+}
+
+
 
         class DrawGame extends Game {
             start() {
